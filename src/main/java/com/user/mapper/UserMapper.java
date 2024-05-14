@@ -11,4 +11,8 @@ public interface UserMapper {
 
 	User selectByEmailAndPassword(String email, String password);
 
+	User selectByEmail(String email);
+
+	void insert(User newUser);
+
 }

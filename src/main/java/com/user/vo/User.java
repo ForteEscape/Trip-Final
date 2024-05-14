@@ -9,6 +9,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import lombok.Builder;
+
+@Builder
 public record User(
 		int id,
 		int sidoCode,
@@ -19,7 +22,7 @@ public record User(
 		String comment,
 		String userCode,
 		String profileImagePath,
-		RoleType role
+		String role
 ) implements UserDetails {
 	
 	private static String PREFIX = "ROLE_";
