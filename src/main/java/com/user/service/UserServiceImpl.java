@@ -100,7 +100,7 @@ public class UserServiceImpl implements UserService {
 			return response.fail("refresh token 정보가 유효하지 않습니다.", HttpStatus.BAD_REQUEST);
 		}
 		
-		Authentication authentication = tokenProvider.getAuthentication(reissueRequest.refreshToken());
+		Authentication authentication = tokenProvider.getAuthentication(reissueRequest.accessToken());
 		String name = authentication.getName();
 		
 		String refreshToken = (String) redisTemplate.opsForValue()

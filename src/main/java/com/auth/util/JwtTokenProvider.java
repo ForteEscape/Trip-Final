@@ -132,7 +132,7 @@ public class JwtTokenProvider {
 			return Jwts.parserBuilder()
 					.setSigningKey(key)
 					.build()
-					.parseClaimsJwt(token)
+					.parseClaimsJws(token)
 					.getBody();
 		} catch (ExpiredJwtException e) {
 			return e.getClaims();
