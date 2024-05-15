@@ -3,6 +3,7 @@ package com.user.vo;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
 public record UserRequest() {
@@ -19,9 +20,9 @@ public record UserRequest() {
 
 			@NotEmpty(message = "이름은 필수 입력값입니다.") String name,
 
-			@NotEmpty(message = "시 도 주소는 필수 입력값입니다.") Integer sidoCode,
+			@NotNull(message = "시 도 주소는 필수 입력값입니다.") Integer sidoCode,
 
-			@NotEmpty(message = "군 구 주소는 필수 입력값입니다.") Integer gunguCode) {
+			@NotNull(message = "군 구 주소는 필수 입력값입니다.") Integer gunguCode) {
 
 	}
 

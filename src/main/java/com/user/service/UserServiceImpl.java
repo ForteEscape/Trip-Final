@@ -47,12 +47,17 @@ public class UserServiceImpl implements UserService {
 			return response.fail("이미 가입한 이메일입니다.", HttpStatus.BAD_REQUEST);
 		}
 
+		// TODO: user code 제작해야함
 		User newUser = User.builder()
+				.name(signUpRequest.name())
 				.email(signUpRequest.email())
 				.password(passwordEncoder.encode(signUpRequest.password()))
 				.role(RoleType.USER.getRole())
 				.sidoCode(signUpRequest.sidoCode())
 				.gugunCode(signUpRequest.gunguCode())
+				.comment("")
+				.userCode("")
+				.profileImagePath("")
 				.build();
 
 		userMapper.insert(newUser);

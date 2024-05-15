@@ -9,29 +9,38 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
+@SuppressWarnings("serial")
 @Builder
-public record User(
-		int id,
-		int sidoCode,
-		int gugunCode,
-		String name,
-		String email,
-		String password,
-		String comment,
-		String userCode,
-		String profileImagePath,
-		String role
-) implements UserDetails {
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
+@EqualsAndHashCode
+public class User implements UserDetails {
 	
-	private static String PREFIX = "ROLE_";
+	private int id;
+	private int sidoCode;
+	private int gugunCode;
+	private String name;
+	private String email;
+	private String password;
+	private String comment;
+	private String userCode;
+	private String profileImagePath;
+	private String role;
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		// TODO Auto-generated method stub
 		List<String> roles = new ArrayList<>();
-		roles.add(PREFIX + role.toString());
+		roles.add(role);
 		
 		return roles.stream()
 				.map(SimpleGrantedAuthority::new)

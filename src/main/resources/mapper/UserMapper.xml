@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.user.mapper.UserMapper">
+
+	<resultMap type="User" id="user">
+		<result column="sido_code" property="sidoCode"/>
+		<result column="gugun_code" property="gugunCode"/>
+		<result column="user_code" property="userCode"/>
+		<result column="profile_image" property="profileImagePath"/>
+	</resultMap>
+
+	<insert id="insert" parameterType="User">
+		insert into user
+		values(
+			null, #{sidoCode}, #{gugunCode}, #{name}, #{email}, 
+			#{password}, #{comment}, #{userCode}, #{profileImagePath},
+			#{role}
+		)
+	</insert>
+	
+	<select id="selectByEmail" parameterType="String" resultMap="user">
+		select * from user where email = #{email}
+	</select>
+</mapper>

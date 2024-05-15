@@ -33,7 +33,7 @@ public class AuthService implements UserDetailsService {
 	}
 
 	private UserDetails createUserDetails(com.user.vo.User user) {
-		return new User(user.email(), user.password(), user.getAuthorities());
+		return new User(user.getEmail(), user.getPassword(), user.getAuthorities());
 	}
 
 }
