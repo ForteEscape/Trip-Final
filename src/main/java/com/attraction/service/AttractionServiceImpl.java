@@ -15,6 +15,7 @@ import com.attraction.entity.AttractionInfo;
 import com.attraction.entity.Gugun;
 import com.attraction.entity.Sido;
 import com.attraction.mapper.AttractionCommandMapper;
+import com.attraction.mapper.AttractionQueryMapper;
 import com.attraction.util.DataCrawler;
 import com.attraction.util.JsonParser;
 import com.common.dto.Response;
@@ -29,6 +30,7 @@ public class AttractionServiceImpl implements AttractionService {
 
 	private final JsonParser jsonParser;
 	private final AttractionCommandMapper attractionMapper;
+	private final AttractionQueryMapper attractionQueryMapper;
 	private final DataCrawler dataCrawler;
 	private final Response response;
 

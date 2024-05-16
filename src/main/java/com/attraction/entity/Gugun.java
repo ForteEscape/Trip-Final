@@ -15,7 +15,4 @@ public class Gugun {
 	private String gugunName;
 	private int sidoCode;
 	
-	public static Gugun from(com.attraction.vo.Gugun gugun) {
-		return null;
-	}
 }

@@ -3,9 +3,11 @@ package com.attraction.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.attraction.service.AttractionQueryService;
 import com.attraction.service.AttractionService;
 
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 public class AttractionController {
 
 	private final AttractionService attractionService;
+	private final AttractionQueryService attractionQueryService;
 
 	// sido 데이터 업데이트
 	// gugun 데이터 업데이트
@@ -29,5 +32,15 @@ public class AttractionController {
 	@GetMapping
 	public ResponseEntity<?> updateAttractionInfo() {
 		return attractionService.getAttractionInfo();
+	}
+	
+	@GetMapping("/cities")
+	public ResponseEntity<?> getSidoData() {
+		return attractionQueryService.selectAllCity();
+	}
+	
+	@GetMapping("/cities/{cityCode}/towns")
+	public ResponseEntity<?> getGunguData(@PathVariable("cityCode") String cityCode) {
+		return attractionQueryService.selectGugunBySidoId(cityCode);
 	}
 }

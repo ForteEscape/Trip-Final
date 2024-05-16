@@ -10,7 +10,20 @@
 		<result column="sido_code" property="sidoCode" />
 	</resultMap>
 	
+	<resultMap id="sidoEntity" type="Sido">
+		<result column="sido_code" property="sidoCode" />
+		<result column="sido_name" property="sidoName" />
+	</resultMap>
+	
 	<select id="selectAllGugun" resultMap="gugunEntity">
 		select * from gugun
+	</select>
+	
+	<select id="selectAllSido" resultMap="sidoEntity">
+		select * from sido;
+	</select>
+	
+	<select id="selectBySidoCode" resultMap="gugunEntity" parameterType="String">
+		select * from gugun where sido_code = #{sidoCode}
 	</select>
 </mapper>

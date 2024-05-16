@@ -22,8 +22,4 @@ public class AttractionInfo {
 	private double latitude;
 	private double longitude;
 	
-	// TODO: from method implements
-	public static AttractionInfo from(com.attraction.vo.AttractionInfo info) {
-		return null;
-	}
 }

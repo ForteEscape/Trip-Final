@@ -14,9 +14,4 @@ public class AttractionDescription {
 	private String overview;
 	private String telname;
 	
-	//TODO: implements from method
-	public static AttractionDescription from(com.attraction.vo.AttractionDescription desc) {
-		
-		return null;
-	}
 }
