@@ -7,6 +7,44 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
 public record UserRequest() {
+	
+	public static record Password(
+			
+			@NotEmpty(message = "이름은 필수 입력입니다.")
+			String name,
+			
+			@NotEmpty(message = "이메일은 필수 입력입니다.")
+			@Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,6}$", message = "이메일 형식에 맞지 않습니다.")
+			String email) {
+		
+	}
+	
+	public static record PasswordUpdate(
+			
+			@NotEmpty(message = "현재 비밀번호는 필수 입력값입니다.")
+			String currentPassword,
+			
+			@NotEmpty(message = "새로운 비밀번호는 필수 입력값입니다.")
+			@Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[~!@#$%^&*()+|=])[A-Za-z\\d~!@#$%^&*()+|=]{8,16}$", message = "비밀번호는 8~16자 영문 대 소문자, 숫자, 특수문자가 사용되어야 합니다.")
+			String newPassword
+	) {
+		
+	}
+	
+	public static record Update(
+			
+			@NotEmpty(message = "이름은 필수 입력입니다.")
+			String name,
+			
+			@NotNull(message = "시 도 주소는 필수 입력값입니다.")
+			Integer sidoCode,
+			
+			@NotNull(message = "군 구 주소는 필수 입력값입니다.")
+			Integer gunguCode,
+			
+			String comment) {
+		
+	}
 
 	public static record SignUp(
 

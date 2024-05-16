@@ -14,6 +14,7 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 @SuppressWarnings("serial")
@@ -35,6 +36,38 @@ public class User implements UserDetails {
 	private String userCode;
 	private String profileImagePath;
 	private String role;
+	
+	public void modifySidoCode(int sidoCode) {
+		if(sidoCode < 1 || (sidoCode > 8 && sidoCode < 31) || sidoCode > 39) {
+			throw new IllegalArgumentException("잘못된 시 도 코드입니다.");
+		}
+		
+		this.sidoCode = sidoCode;
+	}
+	
+	public void modifyGugunCode(int gugunCode) {
+		if(gugunCode < 1 || gugunCode > 31) {
+			throw new IllegalArgumentException("잘못된 시 군 구 코드입니다.");
+		}
+		
+		this.gugunCode = gugunCode;
+	}
+	
+	public void modifyName(String name) {
+		this.name = name;
+	}
+	
+	public void modifyComment(String comment) {
+		this.comment = comment;
+	}
+	
+	public void modifyPassword(String password) {
+		this.password = password;
+	}
+	
+	public void modifyUserProfileImage(String newImgPath) {
+		this.profileImagePath = newImgPath;
+	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {

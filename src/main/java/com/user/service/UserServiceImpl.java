@@ -17,12 +17,17 @@ import com.auth.util.JwtTokenProvider;
 import com.auth.vo.Token;
 import com.common.dto.Response;
 import com.user.entity.User;
+import com.user.entity.UserInfo;
 import com.user.mapper.UserMapper;
 import com.user.vo.RoleType;
 import com.user.vo.UserRequest.Login;
 import com.user.vo.UserRequest.Logout;
+import com.user.vo.UserRequest.Password;
+import com.user.vo.UserRequest.PasswordUpdate;
 import com.user.vo.UserRequest.Reissue;
 import com.user.vo.UserRequest.SignUp;
+import com.user.vo.UserRequest.Update;
+import com.user.vo.UserResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -134,7 +139,7 @@ public class UserServiceImpl implements UserService {
 		String refreshToken = (String) redisTemplate.opsForValue()
 				.get("RT:" + name);
 		
-		if(ObjectUtils.isEmpty(refreshToken)) {
+		if(!ObjectUtils.isEmpty(refreshToken)) {
 			redisTemplate.delete("RT:" + name);
 		}
 		
@@ -143,6 +148,63 @@ public class UserServiceImpl implements UserService {
 			.set(logoutRequest.accessToken(), LOGOUT_KEY, expiration, TimeUnit.MILLISECONDS);
 		
 		return response.success("로그아웃 되었습니다.");
+	}
+
+	@Transactional(readOnly=true)
+	@Override
+	public ResponseEntity<?> getUserInfo(String userEmail) {		
+		UserInfo userInfo = userMapper.selectUserInfoByEmail(userEmail);
+		UserResponse.UserInfo userInfoResponse = UserResponse.UserInfo.from(userInfo);
+		
+		return response.success(userInfoResponse, "유저 조회 성공", HttpStatus.OK);
+	}
+
+	@Transactional
+	@Override
+	public ResponseEntity<?> updateUserInfo(Update userInfo, String userEmail) {
+		User user = userMapper.selectByEmail(userEmail);
+		
+		try {
+			user.modifySidoCode(userInfo.sidoCode());
+			user.modifyGugunCode(userInfo.gunguCode());
+			user.modifyComment(userInfo.comment());
+			user.modifyName(userInfo.name());
+			
+			userMapper.updateUser(user);
+		} catch (IllegalArgumentException e) {
+			return response.fail("잘못된 입력입니다.", HttpStatus.BAD_REQUEST);
+		}
+		
+		return response.success("정보 갱신에 성공했습니다.");
+	}
+
+	@Transactional
+	@Override
+	public ResponseEntity<?> updateUserPassword(PasswordUpdate passwordData, String userEmail) {
+		User user = userMapper.selectByEmail(userEmail);
+		String currentPassword = passwordData.currentPassword();
+		
+		if(!passwordEncoder.matches(currentPassword, user.getPassword())) {
+			return response.fail("잘못된 패스워드입니다.", HttpStatus.BAD_REQUEST);
+		}
+		
+		user.modifyPassword(passwordEncoder.encode(passwordData.newPassword()));
+		userMapper.updatePassword(user);
+		
+		return response.success("패스워드 변경에 성공했습니다.");
+	}
+
+	@Override
+	public ResponseEntity<?> findUserPassword(Password passwordForm) {
+		User user = userMapper.selectByEmail(passwordForm.email());
+		
+		if(user == null) {
+			return response.fail("존재하지 않는 사용자입니다.", HttpStatus.BAD_REQUEST);
+		}
+		
+		user.modifyPassword(passwordEncoder.encode(passwordForm.email()));
+		
+		return response.success("패스워드가 초기화되었습니다. 초기 패스워드는 이메일과 동일합니다.");
 	}
 
 }

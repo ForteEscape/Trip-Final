@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.attraction.entity.AttractionInfo;
 import com.attraction.entity.Gugun;
 import com.attraction.entity.Sido;
 
@@ -15,4 +16,6 @@ public interface AttractionQueryMapper {
 	List<Sido> selectAllSido();
 	
 	List<Gugun> selectBySidoCode(String sidoCode);
+	
+	List<AttractionInfo> selectAllAttractionInfo();
 }

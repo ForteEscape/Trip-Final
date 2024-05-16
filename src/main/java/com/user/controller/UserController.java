@@ -1,18 +1,17 @@
 package com.user.controller;
 
+import java.security.Principal;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.Errors;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.common.dto.Response;
-import com.common.util.Helper;
 import com.user.service.UserService;
 import com.user.vo.UserRequest;
 
@@ -25,48 +24,33 @@ import lombok.RequiredArgsConstructor;
 public class UserController {
 	
 	private final UserService userService;
-	private final Response response;
 	
-	@PostMapping("/sign-up")
-	public ResponseEntity<?> signUp(@Validated @RequestBody UserRequest.SignUp signUp, Errors errors) {
-		if(errors.hasErrors()) {
-			return response.invalidFields(Helper.refineErrors(errors));
-		}
-		
-		return userService.signUp(signUp);
+	@PreAuthorize("hasRole('ROLE_USER')")
+	@GetMapping
+	public ResponseEntity<?> getUserInfo(Principal principal) {
+		return userService.getUserInfo(principal.getName());
 	}
 	
-	@PostMapping("/login")
-	public ResponseEntity<?> login(@Validated @RequestBody UserRequest.Login login, Errors errors) {
-		if(errors.hasErrors()) {
-			return response.invalidFields(Helper.refineErrors(errors));
-		}	
-		
-		return userService.login(login);
+	@PreAuthorize("hasRole('ROLE_USER')")
+	@PutMapping
+	public ResponseEntity<?> updateUserInfo(@RequestBody UserRequest.Update userInfo, Principal principal) {
+		return userService.updateUserInfo(userInfo, principal.getName());
 	}
 	
-	@PostMapping("/reissue")
-	public ResponseEntity<?> reissue(@Validated @RequestBody UserRequest.Reissue reissue, Errors errors) {
-		if(errors.hasErrors()) {
-			return response.invalidFields(Helper.refineErrors(errors));
-		}
-		
-		return userService.reissue(reissue);
+	@PreAuthorize("hasRole('ROLE_USER')")
+	@PutMapping("/profile-image")
+	public ResponseEntity<?> updateUserProfileImage() {
+		return null;
 	}
 	
-	@PostMapping("/logout")
-	public ResponseEntity<?> logout(@Validated @RequestBody UserRequest.Logout logout, Errors errors) {
-		if(errors.hasErrors()) {
-			return response.invalidFields(Helper.refineErrors(errors));
-		}
-		
-		return userService.logout(logout);
+	@PreAuthorize("hasRole('ROLE_USER')")
+	@PutMapping("/password")
+	public ResponseEntity<?> updateUserPassword(@RequestBody UserRequest.PasswordUpdate passwordData, Principal principal) {
+		return userService.updateUserPassword(passwordData, principal.getName());
 	}
 	
-	@GetMapping("/test")
-	@PreAuthorize("hasRole('USER')")
-	public ResponseEntity<?> test() {
-		
-		return response.success("success");
+	@PostMapping("/password")
+	public ResponseEntity<?> findUserPassword(@RequestBody UserRequest.Password passwordForm) {
+		return userService.findUserPassword(passwordForm);
 	}
 }

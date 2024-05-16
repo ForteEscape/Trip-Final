@@ -1,18 +1,29 @@
 package com.user.vo;
 
-import java.util.List;
-
-import com.auth.vo.Token;
-
 import lombok.Builder;
 
-@Builder
-public record UserResponse(
-		int stateCode,
-		String result,
-		String message,
-		Token token,
-		List<String> error
-		){
-
+public record UserResponse(){
+	
+	@Builder
+	public static record UserInfo(
+			String name,
+			String email,
+			String comment,
+			String userCode,
+			String profileImagePath,
+			String sidoName,
+			String gugunName
+	) {
+		public static UserInfo from(com.user.entity.UserInfo userInfo) {
+			return UserResponse.UserInfo.builder()
+					.name(userInfo.getName())
+					.email(userInfo.getEmail())
+					.comment(userInfo.getComment())
+					.userCode(userInfo.getUserCode())
+					.profileImagePath(userInfo.getProfileImagePath())
+					.sidoName(userInfo.getSidoName())
+					.gugunName(userInfo.getGugunName())
+					.build();
+		}
+	}
 }

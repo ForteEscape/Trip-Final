@@ -15,6 +15,15 @@
 		<result column="sido_name" property="sidoName" />
 	</resultMap>
 	
+	<resultMap type="AttractionInfo" id="attractionInfo">
+		<result column="content_id" property="contentId"/>
+		<result column="sido_code" property="sidoCode"/>
+		<result column="gugun_code" property="gugunCode"/>
+		<result column="content_type_id" property="contentTypeId"/>
+		<result column="zipcode" property="zipCode"/>
+		<result column="first_image" property="firstImage"/>
+	</resultMap>
+	
 	<select id="selectAllGugun" resultMap="gugunEntity">
 		select * from gugun
 	</select>
@@ -26,4 +35,6 @@
 	<select id="selectBySidoCode" resultMap="gugunEntity" parameterType="String">
 		select * from gugun where sido_code = #{sidoCode}
 	</select>
+	
+	
 </mapper>

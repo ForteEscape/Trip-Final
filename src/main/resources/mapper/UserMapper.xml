@@ -10,6 +10,13 @@
 		<result column="user_code" property="userCode"/>
 		<result column="profile_image" property="profileImagePath"/>
 	</resultMap>
+	
+	<resultMap type="UserInfo" id="userInfo">
+		<result column="sido_name" property="sidoName"/>
+		<result column="gugun_name" property="gugunName"/>
+		<result column="user_code" property="userCode"/>
+		<result column="profile_image" property="profileImagePath"/>
+	</resultMap>
 
 	<insert id="insert" parameterType="User">
 		insert into user
@@ -23,4 +30,20 @@
 	<select id="selectByEmail" parameterType="String" resultMap="user">
 		select * from user where email = #{email}
 	</select>
+	
+	<select id="selectUserInfoByEmail" parameterType="String" resultMap="userInfo">
+		select * from user_info where email=#{email}
+	</select>
+	
+	<update id="updateUser" parameterType="User">
+		update user set
+		sido_code = #{sidoCode}, gugun_code = #{gugunCode}, comment = #{comment}, name = #{name}
+		where id = #{id}
+	</update>
+	
+	<update id="updatePassword" parameterType="User">
+		update user set 
+		password=#{password}
+		where id=#{id}
+	</update>
 </mapper>
