@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.attraction.mapper.AttractionCommandMapper">
+	<insert id="insertAttractionInfo" parameterType="java.util.List">
+		insert into attraction_info
+		values
+		<foreach collection="list" item="attractionInfo" separator=",">
+			(
+				#{attractionInfo.contentId},
+				#{attractionInfo.sidoCode},
+				#{attractionInfo.gugunCode},
+				#{attractionInfo.contentTypeId},
+				#{attractionInfo.title},
+				#{attractionInfo.addr1},
+				#{attractionInfo.addr2},
+				#{attractionInfo.zipCode},
+				#{attractionInfo.tel},
+				#{attractionInfo.firstImage},
+				#{attractionInfo.latitude},
+				#{attractionInfo.longitude}
+			)
+		</foreach>
+	</insert>
+	
+	<insert id="insertAttractionDescription" parameterType="java.util.List">
+		insert into attraction_description
+		values
+		<foreach collection="list" item="attractionDescription" separator=",">
+			(
+				#{attractionDescription.contentId},
+				#{attractionDescription.homepage},
+				#{attractionDescription.overview},
+				#{attractionDescription.telname}
+			)
+		</foreach>
+	</insert>
+	
+	<insert id="insertSidoData" parameterType="java.util.List">
+		insert into sido
+		values
+		<foreach collection="list" item="sido" separator=",">
+			(
+				#{sido.sidoCode},
+				#{sido.sidoName}
+			)
+		</foreach>
+	</insert>
+	
+	<insert id="insertGunGuData" parameterType="java.util.List">
+		insert into gugun
+		values
+		<foreach collection="list" item="gugun" separator=",">
+			(
+				#{gugun.gugunCode},
+				#{gugun.sidoCode},
+				#{gugun.gugunName}
+			)
+		</foreach>
+	</insert>
+	
+	<insert id="testInsert" parameterType="AttractionInfo">
+		insert into attraction_info
+		values
+		(
+			#{contentId},
+			#{sidoCode},
+			#{gugunCode},
+			#{contentTypeId},
+			#{title},
+			#{addr1},
+			#{addr2},
+			#{zipCode},
+			#{tel},
+			#{firstImage},
+			#{latitude},
+			#{longitude}
+		)
+	</insert>
+</mapper>

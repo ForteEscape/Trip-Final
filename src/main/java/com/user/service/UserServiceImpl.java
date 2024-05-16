@@ -10,14 +10,15 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import com.auth.util.JwtTokenProvider;
 import com.auth.vo.Token;
 import com.common.dto.Response;
+import com.user.entity.User;
 import com.user.mapper.UserMapper;
 import com.user.vo.RoleType;
-import com.user.vo.User;
 import com.user.vo.UserRequest.Login;
 import com.user.vo.UserRequest.Logout;
 import com.user.vo.UserRequest.Reissue;
@@ -39,6 +40,7 @@ public class UserServiceImpl implements UserService {
 	private static final String LOGOUT_KEY = "logout";
 
 	@Override
+	@Transactional
 	public ResponseEntity<?> signUp(SignUp signUpRequest) {
 		// TODO Auto-generated method stub
 		User user = userMapper.selectByEmail(signUpRequest.email());

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.attraction.mapper.AttractionQueryMapper">
+	
+	<resultMap id="gugunEntity" type="Gugun">
+		<result column="gugun_code" property="gugunCode"/>
+		<result column="gugun_name" property="gugunName" />
+		<result column="sido_code" property="sidoCode" />
+	</resultMap>
+	
+	<select id="selectAllGugun" resultMap="gugunEntity">
+		select * from gugun
+	</select>
+</mapper>

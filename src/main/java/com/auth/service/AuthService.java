@@ -23,7 +23,7 @@ public class AuthService implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 		// TODO Auto-generated method stub
-		com.user.vo.User user = userMapper.selectByEmail(email);
+		com.user.entity.User user = userMapper.selectByEmail(email);
 
 		if (user == null) {
 			throw new UsernameNotFoundException("user not exists");
@@ -32,7 +32,7 @@ public class AuthService implements UserDetailsService {
 		return createUserDetails(user);
 	}
 
-	private UserDetails createUserDetails(com.user.vo.User user) {
+	private UserDetails createUserDetails(com.user.entity.User user) {
 		return new User(user.getEmail(), user.getPassword(), user.getAuthorities());
 	}
 

@@ -1,4 +1,4 @@
-package com.user.vo;
+package com.user.entity;
 
 import java.util.ArrayList;
 import java.util.Collection;

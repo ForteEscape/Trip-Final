@@ -2,7 +2,7 @@ package com.user.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.user.vo.User;
+import com.user.entity.User;
 
 @Mapper
 public interface UserMapper {
