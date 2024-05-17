@@ -8,6 +8,7 @@ public record UserResponse(){
 	public static record UserInfo(
 			String name,
 			String email,
+			String phone,
 			String comment,
 			String userCode,
 			String profileImagePath,
@@ -18,6 +19,7 @@ public record UserResponse(){
 			return UserResponse.UserInfo.builder()
 					.name(userInfo.getName())
 					.email(userInfo.getEmail())
+					.phone(userInfo.getPhone())
 					.comment(userInfo.getComment())
 					.userCode(userInfo.getUserCode())
 					.profileImagePath(userInfo.getProfileImagePath())

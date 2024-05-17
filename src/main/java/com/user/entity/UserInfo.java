@@ -19,6 +19,7 @@ public class UserInfo {
 	private String gugunName;
 	private String name;
 	private String email;
+	private String phone;
 	private String comment;
 	private String userCode;
 	private String profileImagePath;

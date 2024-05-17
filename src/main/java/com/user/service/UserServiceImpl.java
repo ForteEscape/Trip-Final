@@ -19,6 +19,7 @@ import com.common.dto.Response;
 import com.user.entity.User;
 import com.user.entity.UserInfo;
 import com.user.mapper.UserMapper;
+import com.user.util.UserCodeGenerator;
 import com.user.vo.RoleType;
 import com.user.vo.UserRequest.Login;
 import com.user.vo.UserRequest.Logout;
@@ -41,6 +42,7 @@ public class UserServiceImpl implements UserService {
 	private final JwtTokenProvider tokenProvider;
 	private final AuthenticationManagerBuilder authenticationManagerBuilder;
 	private final RedisTemplate<String, Object> redisTemplate;
+	private final UserCodeGenerator userCodeGenerator;
 	
 	private static final String LOGOUT_KEY = "logout";
 
@@ -62,8 +64,9 @@ public class UserServiceImpl implements UserService {
 				.role(RoleType.USER.getRole())
 				.sidoCode(signUpRequest.sidoCode())
 				.gugunCode(signUpRequest.gunguCode())
+				.phone(signUpRequest.phone())
 				.comment("")
-				.userCode("")
+				.userCode(userCodeGenerator.generateUserCode(signUpRequest.email()))
 				.profileImagePath("")
 				.build();
 
@@ -169,6 +172,7 @@ public class UserServiceImpl implements UserService {
 			user.modifyGugunCode(userInfo.gunguCode());
 			user.modifyComment(userInfo.comment());
 			user.modifyName(userInfo.name());
+			user.modifyUserPhone(userInfo.phone());
 			
 			userMapper.updateUser(user);
 		} catch (IllegalArgumentException e) {

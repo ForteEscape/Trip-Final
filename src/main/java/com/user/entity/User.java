@@ -32,10 +32,15 @@ public class User implements UserDetails {
 	private String name;
 	private String email;
 	private String password;
+	private String phone;
 	private String comment;
 	private String userCode;
 	private String profileImagePath;
 	private String role;
+	
+	public void modifyUserPhone(String phone) {
+		this.phone = phone;
+	}
 	
 	public void modifySidoCode(int sidoCode) {
 		if(sidoCode < 1 || (sidoCode > 8 && sidoCode < 31) || sidoCode > 39) {

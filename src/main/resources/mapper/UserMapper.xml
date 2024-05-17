@@ -22,7 +22,7 @@
 		insert into user
 		values(
 			null, #{sidoCode}, #{gugunCode}, #{name}, #{email}, 
-			#{password}, #{comment}, #{userCode}, #{profileImagePath},
+			#{password}, #{phone}, #{comment}, #{userCode}, #{profileImagePath},
 			#{role}
 		)
 	</insert>
@@ -37,7 +37,7 @@
 	
 	<update id="updateUser" parameterType="User">
 		update user set
-		sido_code = #{sidoCode}, gugun_code = #{gugunCode}, comment = #{comment}, name = #{name}
+		sido_code = #{sidoCode}, gugun_code = #{gugunCode}, comment = #{comment}, name = #{name}, phone = #{phone}
 		where id = #{id}
 	</update>
 	
