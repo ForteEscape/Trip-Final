@@ -1,14 +1,7 @@
 package com.user.controller;
 
-import java.io.File;
-import java.io.IOException;
 import java.security.Principal;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -38,9 +31,6 @@ public class UserController {
 	private final UserService userService;
 	private final Response response;
 	
-	@Value("${file.path.upload.image.user-profile}")
-	private String uploadProfileImagePath;
-	
 	@GetMapping("/test")
 	public ResponseEntity<?> testControll() {
 		return response.success("통신 성공");
@@ -54,9 +44,10 @@ public class UserController {
 	
 	@PreAuthorize("hasRole('ROLE_USER')")
 	@PutMapping
-	public ResponseEntity<?> updateUserInfo(@RequestBody UserRequest.Update userInfo,  Principal principal) {
+	public ResponseEntity<?> updateUserInfo(@RequestPart("profile") MultipartFile image,
+			@RequestPart("userInfo") UserRequest.Update userInfo,  Principal principal) {
 		
-		return userService.updateUserInfo(userInfo, principal.getName(), "");
+		return userService.updateUserInfo(image, userInfo, principal.getName());
 	}
 	
 	@PreAuthorize("hasRole('ROLE_USER')")

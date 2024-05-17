@@ -1,12 +1,12 @@
 package com.user.service;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.user.vo.UserRequest;
 import com.user.vo.UserRequest.Email;
 import com.user.vo.UserRequest.EmailValidate;
 import com.user.vo.UserRequest.Password;
-import com.user.vo.UserRequest.PasswordUpdate;
 
 public interface UserService {
 
@@ -20,7 +20,7 @@ public interface UserService {
 
 	ResponseEntity<?> getUserInfo(String userEmail);
 
-	ResponseEntity<?> updateUserInfo(UserRequest.Update userInfo, String userEmail, String userProfileImagePath);
+	ResponseEntity<?> updateUserInfo(MultipartFile image, UserRequest.Update userInfo, String userEmail);
 
 	ResponseEntity<?> updateUserPassword(UserRequest.PasswordUpdate passwordData, String userEmail);
 

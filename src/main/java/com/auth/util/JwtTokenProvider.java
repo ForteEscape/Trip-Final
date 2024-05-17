@@ -40,7 +40,7 @@ public class JwtTokenProvider {
 
 	private final Key key;
 	//private static final int VALID_TIME = 1000 * 60 * 60 * 24;
-	private static final int VALID_TIME = 1000 * 60 * 2;
+	private static final int VALID_TIME = 1000 * 60 * 30;
 	private static final int REFRESH_VALID_TIME = 1000 * 60 * 60 * 24 * 2;
 	private static final String AUTHORITIES_KEY = "auth";
 	

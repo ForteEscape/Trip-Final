@@ -14,10 +14,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.auth.util.JwtTokenProvider;
 import com.auth.vo.Token;
 import com.common.dto.Response;
+import com.common.exception.CustomException;
+import com.common.service.S3ImageService;
 import com.user.entity.User;
 import com.user.entity.UserInfo;
 import com.user.mapper.UserMapper;
@@ -49,6 +52,7 @@ public class UserServiceImpl implements UserService {
 	private final AuthenticationManagerBuilder authenticationManagerBuilder;
 	private final RedisTemplate<String, Object> redisTemplate;
 	private final UserCodeGenerator userCodeGenerator;
+	private final S3ImageService s3ImageService;
 	
 	private static final String LOGOUT_KEY = "logout";
 
@@ -170,20 +174,24 @@ public class UserServiceImpl implements UserService {
 
 	@Transactional
 	@Override
-	public ResponseEntity<?> updateUserInfo(Update userInfo, String userEmail, String userProfileImagePath) {
+	public ResponseEntity<?> updateUserInfo(MultipartFile image, Update userInfo, String userEmail) {
 		User user = userMapper.selectByEmail(userEmail);
 		
 		try {
+			String imagePath = s3ImageService.upload(image);
+			
 			user.modifySidoCode(userInfo.sidoCode());
 			user.modifyGugunCode(userInfo.gunguCode());
 			user.modifyComment(userInfo.comment());
 			user.modifyName(userInfo.name());
 			user.modifyUserPhone(userInfo.phone());
-			user.modifyUserProfileImage(userProfileImagePath);
+			user.modifyUserProfileImage(imagePath);
 			
 			userMapper.updateUser(user);
 		} catch (IllegalArgumentException e) {
 			return response.fail("잘못된 입력입니다.", HttpStatus.BAD_REQUEST);
+		} catch (CustomException e) {
+			return response.fail(e.getMessage(), e.getStatus());
 		}
 		
 		return response.success("정보 갱신에 성공했습니다.");
