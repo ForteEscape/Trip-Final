@@ -14,6 +14,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /*
  * JWT 인증을 위해 설치하는 Filter
@@ -24,6 +25,7 @@ import lombok.RequiredArgsConstructor;
  */
 
 @RequiredArgsConstructor
+@Slf4j
 public class JwtAuthFilter extends OncePerRequestFilter {
 	
 	private final JwtTokenProvider tokenProvider;
@@ -36,10 +38,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String token = resolveToken(request);
-		
+		log.info("expired : " + tokenProvider.validateToken(token));
 		if(token != null && tokenProvider.validateToken(token)) {
 			Authentication authentication = tokenProvider.getAuthentication(token);
 			SecurityContextHolder.getContext().setAuthentication(authentication);
+		} else if(token != null && !tokenProvider.validateToken(token)){
+			response.sendError(HttpServletResponse.SC_FORBIDDEN, "JWT Expired");
+			return;
 		}
 		
 		filterChain.doFilter(request, response);

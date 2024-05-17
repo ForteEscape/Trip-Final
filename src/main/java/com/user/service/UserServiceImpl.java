@@ -1,5 +1,7 @@
 package com.user.service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.data.redis.core.RedisTemplate;
@@ -21,6 +23,8 @@ import com.user.entity.UserInfo;
 import com.user.mapper.UserMapper;
 import com.user.util.UserCodeGenerator;
 import com.user.vo.RoleType;
+import com.user.vo.UserRequest.Email;
+import com.user.vo.UserRequest.EmailValidate;
 import com.user.vo.UserRequest.Login;
 import com.user.vo.UserRequest.Logout;
 import com.user.vo.UserRequest.Password;
@@ -31,9 +35,11 @@ import com.user.vo.UserRequest.Update;
 import com.user.vo.UserResponse;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService {
 
 	private final UserMapper userMapper;
@@ -164,7 +170,7 @@ public class UserServiceImpl implements UserService {
 
 	@Transactional
 	@Override
-	public ResponseEntity<?> updateUserInfo(Update userInfo, String userEmail) {
+	public ResponseEntity<?> updateUserInfo(Update userInfo, String userEmail, String userProfileImagePath) {
 		User user = userMapper.selectByEmail(userEmail);
 		
 		try {
@@ -173,6 +179,7 @@ public class UserServiceImpl implements UserService {
 			user.modifyComment(userInfo.comment());
 			user.modifyName(userInfo.name());
 			user.modifyUserPhone(userInfo.phone());
+			user.modifyUserProfileImage(userProfileImagePath);
 			
 			userMapper.updateUser(user);
 		} catch (IllegalArgumentException e) {
@@ -207,8 +214,35 @@ public class UserServiceImpl implements UserService {
 		}
 		
 		user.modifyPassword(passwordEncoder.encode(passwordForm.email()));
+		userMapper.updatePassword(user);
 		
 		return response.success("패스워드가 초기화되었습니다. 초기 패스워드는 이메일과 동일합니다.");
+	}
+
+	@Override
+	public ResponseEntity<?> findUserEmail(Email emailForm) {
+		Map<String, String> paramMap = new HashMap<>();
+		paramMap.put("name", emailForm.name());
+		paramMap.put("phone", emailForm.phone());
+		
+		User user = userMapper.selectByUserNameAndPhone(paramMap);
+		
+		if(user == null) {
+			return response.fail("해당 사용자가 존재하지 않습니다.", HttpStatus.BAD_REQUEST);
+		}
+		
+		return response.success(user.getEmail(), "사용자 이메일 찾기 성공", HttpStatus.OK);
+	}
+
+	@Override
+	public ResponseEntity<?> validateEmail(EmailValidate email) {
+		User user = userMapper.selectByEmail(email.email());
+		
+		if(user != null) {
+			response.fail("등록된 이메일입니다.", HttpStatus.BAD_REQUEST);
+		}
+		
+		return response.success("사용 가능한 이메일입니다.");
 	}
 
 }

@@ -39,7 +39,8 @@ public class JwtTokenProvider {
 	private static final String TOKEN_PREFIX = "Bearer ";
 
 	private final Key key;
-	private static final int VALID_TIME = 1000 * 60 * 60 * 24;
+	//private static final int VALID_TIME = 1000 * 60 * 60 * 24;
+	private static final int VALID_TIME = 1000 * 60 * 2;
 	private static final int REFRESH_VALID_TIME = 1000 * 60 * 60 * 24 * 2;
 	private static final String AUTHORITIES_KEY = "auth";
 	
@@ -116,15 +117,17 @@ public class JwtTokenProvider {
 			return true;
 		} catch (SecurityException | MalformedJwtException e) {
 			log.info("wrong JWT sign");
+			return false;
 		} catch (ExpiredJwtException e) {
 			log.info("expired JWT Token");
+			return false;
 		} catch (UnsupportedJwtException e) {
 			log.info("not support JWT Token");
+			return false;
 		} catch (IllegalArgumentException e) {
 			log.info("wrong JWT Token");
+			return false;
 		}
-		
-		return false;
 	}
 	
 	private Claims parseClaims(String token) {

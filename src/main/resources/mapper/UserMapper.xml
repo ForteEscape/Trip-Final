@@ -37,7 +37,8 @@
 	
 	<update id="updateUser" parameterType="User">
 		update user set
-		sido_code = #{sidoCode}, gugun_code = #{gugunCode}, comment = #{comment}, name = #{name}, phone = #{phone}
+		sido_code = #{sidoCode}, gugun_code = #{gugunCode}, comment = #{comment}, name = #{name}, phone = #{phone}, 
+		profile_image = #{profileImagePath}
 		where id = #{id}
 	</update>
 	
@@ -46,4 +47,10 @@
 		password=#{password}
 		where id=#{id}
 	</update>
+	
+	<select id="selectByUserNameAndPhone" parameterType="map" resultMap="user">
+		select *
+		from user
+		where name=#{name} and phone=#{phone}
+	</select>
 </mapper>

@@ -60,4 +60,13 @@ public class AuthController {
 		
 		return userService.logout(logout);
 	}
+	
+	@PostMapping("/validate/email")
+	public ResponseEntity<?> validateDuplicateEmail(@Validated @RequestBody UserRequest.EmailValidate email, Errors errors) {
+		if(errors.hasErrors()) {
+			return response.invalidFields(Helper.refineErrors(errors));
+		}
+		
+		return userService.validateEmail(email);
+	}
 }
