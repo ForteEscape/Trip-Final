@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.trip.mapper.TripMapper">
+
+	<resultMap type="AttractionInfo" id="attractionInfo">
+		<result column="content_id" property="contentId"/>
+		<result column="sido_code" property="sidoCode"/>
+		<result column="gugun_code" property="gugunCode"/>
+		<result column="content_type_id" property="contentTypeId"/>
+		<result column="zipcode" property="zipCode"/>
+		<result column="first_image" property="firstImage"/>
+	</resultMap>
+	
+	<select id="searchAttraction" parameterType="com.trip.vo.TripRequest$SearchFilter" resultMap="attractionInfo">
+		select * 
+		from attraction_info
+		<where>
+			<if test="sidoCode != 0">
+				and sido_code = #{sidoCode}
+			</if>
+			
+			<if test="gunguCode != 0">
+				and gugun_code = #{gunguCode}
+			</if>
+			
+			<if test="contentType != 0">
+				and content_type_id = #{contentType}
+			</if>
+			
+			<if test="keyword">
+				and title like CONCAT('%', #{keyword}, '%')
+			</if>
+		</where> 
+	</select>
+	
+	<insert id="insertTripPlan" parameterType="map">
+		insert into trip_plan
+		values(null, #{trip.planName}, #{trip.startDate}, #{trip.endDate}, #{user.id})
+		
+		<selectKey resultType="int" keyProperty="trip.id" keyColumn="id" order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+	
+	<insert id="insertTripMembers" parameterType="map">
+		insert into trip_plan_participate
+		values
+		<foreach collection="members" item="member" separator=",">
+			(
+				null, #{planId}, #{member}
+			)
+		</foreach>
+	</insert>
+	
+	<insert id="insertPlaces" parameterType="map">
+		insert into trip_plan_places 
+		values
+		<foreach collection="places" item="place" separator=",">
+			(
+				null, #{planId}, #{place}, #{day}
+			)
+		</foreach>
+	</insert>
+	
+</mapper>

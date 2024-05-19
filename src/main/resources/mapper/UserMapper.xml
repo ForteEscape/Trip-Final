@@ -53,4 +53,8 @@
 		from user
 		where name=#{name} and phone=#{phone}
 	</select>
+	
+	<select id="selectAllUserCode" resultType="String">
+		select user_code from user;
+	</select>
 </mapper>
