@@ -21,6 +21,8 @@ public class TripPlanEntity {
 	private String planName;
 	private LocalDate startDate;
 	private LocalDate endDate;
+	private int userId;
+	private String author;
 	
 	public static TripPlanEntity from(TripPlan plan) {
 		return TripPlanEntity.builder()

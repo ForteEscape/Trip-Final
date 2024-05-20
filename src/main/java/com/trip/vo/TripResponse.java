@@ -1,6 +1,8 @@
 package com.trip.vo;
 
-import com.attraction.vo.AttractionResponse;
+import java.util.List;
+
+import com.trip.entity.TripPlanEntity;
 
 import lombok.Builder;
 
@@ -39,5 +41,48 @@ public record TripResponse() {
 					.telname(description.getTelname())
 					.build();
 		}
+	}
+	
+	public static record TripPlanResponse(
+			List<TripPlan> selectedTrip,
+			List<TripPlan> unSelectedTrip
+			) {
+		
+	}
+	
+	@Builder
+	public static record TripPlan(
+			int id,
+			String planName,
+			String startDate,
+			String endDate,
+			int userId,
+			String author,
+			boolean isSelected) {
+		
+		public static TripPlan from(TripPlanEntity entity, boolean isSelected) {
+			return TripPlan.builder()
+					.id(entity.getId())
+					.planName(entity.getPlanName())
+					.startDate(entity.getStartDate().toString())
+					.endDate(entity.getEndDate().toString())
+					.userId(entity.getUserId())
+					.author(entity.getAuthor())
+					.isSelected(isSelected)
+					.build();
+		}
+	}
+	
+	@Builder
+	public static record TripPlanDetail(
+			int id,
+			String planName,
+			String startDate,
+			String endDate,
+			int userId,
+			String author,
+			List<String> members
+			) {
+		
 	}
 }

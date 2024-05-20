@@ -23,6 +23,7 @@ import com.trip.mapper.TripMapper;
 import com.trip.vo.TripRequest.SearchFilter;
 import com.trip.vo.TripRequest.TripPlan;
 import com.trip.vo.TripResponse;
+import com.trip.vo.TripResponse.TripPlanResponse;
 import com.user.entity.User;
 import com.user.mapper.UserMapper;
 
@@ -57,7 +58,7 @@ public class TripServiceImpl implements TripService {
 	public ResponseEntity<?> addTripPlan(TripPlan tripPlan, String userEmail) {
 		try {
 			User user = userMapper.selectByEmail(userEmail);
-			
+
 			validatePlanDate(tripPlan.startDate(), tripPlan.endDate());
 			validateUserCode(tripPlan.members());
 
@@ -66,12 +67,12 @@ public class TripServiceImpl implements TripService {
 			Map<String, Object> paramMap = new HashMap<>();
 			paramMap.put("user", user);
 			paramMap.put("trip", entity);
-			
+
 			tripMapper.insertTripPlan(paramMap);
 
 			insertVisitPlace(tripPlan.places(), entity.getId());
-
 			insertMembers(tripPlan.members(), entity.getId());
+			insertSelectedTrip(entity.getId(), user.getId());
 		} catch (CustomException e) {
 			return response.fail(e.getMessage(), e.getStatus());
 		}
@@ -80,12 +81,21 @@ public class TripServiceImpl implements TripService {
 	}
 
 	@Transactional
+	private void insertSelectedTrip(int planId, int userId) {
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("planId", planId);
+		paramMap.put("userId", userId);
+
+		tripMapper.insertSelectedTrip(paramMap);
+	}
+
+	@Transactional
 	private void insertMembers(List<String> members, int id) {
 		Map<String, Object> paramMap = new HashMap<>();
-		
+
 		paramMap.put("planId", id);
 		paramMap.put("members", members);
-		
+
 		tripMapper.insertTripMembers(paramMap);
 	}
 
@@ -98,8 +108,6 @@ public class TripServiceImpl implements TripService {
 			paramMap.put("day", day);
 			paramMap.put("places", row);
 			paramMap.put("planId", tripPlanId);
-			
-			log.info(String.valueOf(tripPlanId));
 
 			try {
 				tripMapper.insertPlaces(paramMap);
@@ -113,10 +121,39 @@ public class TripServiceImpl implements TripService {
 
 	}
 
-	private void validateUserCode(List<String> members) {
-		if (userCodeSet == null) {
-			userCodeSet = new HashSet<String>(userMapper.selectAllUserCode());
+	@Transactional(readOnly = true)
+	@Override
+	public ResponseEntity<?> getTripPlan(String userEmail) {
+		User user = userMapper.selectByEmail(userEmail);
+
+		if (user == null) {
+			return response.fail("유저가 존재하지 않습니다.", HttpStatus.BAD_REQUEST);
 		}
+
+		try {
+			List<TripResponse.TripPlan> selectedList = tripMapper.getSelectedTrip(user.getId()).stream()
+					.map(entity -> TripResponse.TripPlan.from(entity, true))
+					.collect(Collectors.toList());
+			
+			Map<String, Object> paramMap = new HashMap<>();
+			paramMap.put("userId", user.getId());
+			paramMap.put("userCode", user.getUserCode());
+			
+			List<TripResponse.TripPlan> unSelectedList = tripMapper.getUnSelectedTrip(paramMap).stream()
+					.map(entity -> TripResponse.TripPlan.from(entity, false))
+					.toList();
+			
+			TripPlanResponse result = new TripPlanResponse(selectedList, unSelectedList);
+			
+			return response.success(result, "여행 목록 조회 성공", HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return response.fail(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	private void validateUserCode(List<String> members) {
+		userCodeSet = new HashSet<String>(userMapper.selectAllUserCode());
 
 		if (!userCodeSet.containsAll(members)) {
 			throw new CustomException(ErrorCode.USER_NOT_FOUND);
@@ -134,4 +171,53 @@ public class TripServiceImpl implements TripService {
 			throw new CustomException(ErrorCode.INVALID_END_DATE);
 		}
 	}
+
+	@Transactional
+	@Override
+	public ResponseEntity<?> selectTripPlan(String planId, String userEmail) {
+		User user = userMapper.selectByEmail(userEmail);
+		
+		try {
+			Map<String, Object> paramMap = new HashMap<>();
+			paramMap.put("planId", planId);
+			paramMap.put("userId", user.getId());
+			
+			int result = tripMapper.getSelectedTripByPlanId(paramMap);
+			
+			if(result != 0) {
+				return response.fail("이미 선택한 여행 계획입니다.", HttpStatus.BAD_REQUEST);
+			}
+			
+			tripMapper.insertSelectedTrip(paramMap);
+		} catch (Exception e) {
+			return response.fail(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		return response.success("선택 처리 성공");
+	}
+
+	@Transactional
+	@Override
+	public ResponseEntity<?> unselectTripPlan(String planId, String userEmail) {
+		User user = userMapper.selectByEmail(userEmail);
+		
+		try {
+			Map<String, Object> paramMap = new HashMap<>();
+			paramMap.put("planId", planId);
+			paramMap.put("userId", user.getId());
+			
+			int result = tripMapper.getSelectedTripByPlanId(paramMap);
+			
+			if(result == 0) {
+				return response.fail("해당 여행 계획이 존재하지 않습니다.", HttpStatus.BAD_REQUEST);
+			}
+			
+			tripMapper.deleteSelectedTrip(paramMap);
+		} catch (Exception e) {
+			return response.fail(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		return response.success("선택 취소 처리 성공");
+	}
+
 }

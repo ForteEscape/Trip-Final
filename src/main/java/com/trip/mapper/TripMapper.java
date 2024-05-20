@@ -21,4 +21,14 @@ public interface TripMapper {
 
 	void insertTripMembers(Map<String, Object> paramMap);
 
+	void insertSelectedTrip(Map<String, Object> paramMap);
+
+	List<TripPlanEntity> getSelectedTrip(int id);
+
+	List<TripPlanEntity> getUnSelectedTrip(Map<String, Object> paramMap);
+
+	int getSelectedTripByPlanId(Map<String, Object> paramMap);
+
+	void deleteSelectedTrip(Map<String, Object> paramMap);
+
 }

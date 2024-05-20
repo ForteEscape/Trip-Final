@@ -3,6 +3,7 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.trip.mapper.TripMapper">
+
 	<resultMap type="AttractionInfo" id="attractionInfo">
 		<result column="content_id" property="contentId"/>
 		<result column="sido_code" property="sidoCode"/>
@@ -11,6 +12,37 @@
 		<result column="zipcode" property="zipCode"/>
 		<result column="first_image" property="firstImage"/>
 	</resultMap>
+	
+	<resultMap type="TripPlanEntity" id="tripPlanEntity">
+		<result column="plan_name" property="planName"/>
+		<result column="start_date" property="startDate"/>
+		<result column="end_date" property="endDate"/>
+		<result column="user_id" property="userId"/>
+	</resultMap>
+	
+	<select id="getSelectedTrip" parameterType="int" resultMap="tripPlanEntity">
+		select * from selected_trip_info
+		where user_id = #{userId} and (start_date >= sysdate())
+	</select>
+	
+	<select id="getUnSelectedTrip" parameterType="map" resultMap="tripPlanEntity">
+		select distinct tp.id, tp.plan_name, tp.start_date, tp.end_date, tp.user_id, u.name as author
+		from trip_plan tp
+		inner join user u
+		on tp.user_id = u.id
+		inner join trip_plan_participate tpp
+		on tp.id = tpp.plan_id
+		where (tp.start_date >= sysdate()) and (tp.user_id = #{userId} or tpp.user_code = #{userCode}) and tp.id not in (
+			select id
+			from selected_trip_info
+			where user_id = #{userId}
+		);
+	</select>
+	
+	<select id="getSelectedTripByPlanId" parameterType="map" resultType="int">
+		select count(*) from selected_trip
+		where user_id = #{userId} and plan_id = #{planId}
+	</select>
 	
 	<select id="searchAttraction" parameterType="com.trip.vo.TripRequest$SearchFilter" resultMap="attractionInfo">
 		select * 
@@ -62,4 +94,14 @@
 			)
 		</foreach>
 	</insert>
+	
+	<insert id="insertSelectedTrip" parameterType="map">
+		insert into selected_trip
+		values(null, #{planId}, #{userId})
+	</insert>
+	
+	<delete id="deleteSelectedTrip" parameterType="map">
+		delete from selected_trip
+		where user_id = #{userId} and plan_id = #{planId}
+	</delete>
 </mapper>

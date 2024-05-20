@@ -21,6 +21,7 @@ import com.auth.vo.Token;
 import com.common.dto.Response;
 import com.common.exception.CustomException;
 import com.common.service.S3ImageService;
+import com.common.util.Directory;
 import com.user.entity.User;
 import com.user.entity.UserInfo;
 import com.user.mapper.UserMapper;
@@ -178,7 +179,7 @@ public class UserServiceImpl implements UserService {
 		User user = userMapper.selectByEmail(userEmail);
 		
 		try {
-			String imagePath = s3ImageService.upload(image);
+			String imagePath = s3ImageService.upload(image, Directory.PROFILE);
 			
 			user.modifySidoCode(userInfo.sidoCode());
 			user.modifyGugunCode(userInfo.gunguCode());
