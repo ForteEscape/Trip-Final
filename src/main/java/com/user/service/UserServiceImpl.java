@@ -185,7 +185,10 @@ public class UserServiceImpl implements UserService {
 			user.modifyComment(userInfo.comment());
 			user.modifyName(userInfo.name());
 			user.modifyUserPhone(userInfo.phone());
-			user.modifyUserProfileImage(imagePath);
+			
+			if(!imagePath.equals("")) {
+				user.modifyUserProfileImage(imagePath);
+			}
 			
 			userMapper.updateUser(user);
 		} catch (IllegalArgumentException e) {

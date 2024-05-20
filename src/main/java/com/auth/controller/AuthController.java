@@ -14,6 +14,7 @@ import com.common.util.Helper;
 import com.user.service.UserService;
 import com.user.vo.UserRequest;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -26,7 +27,7 @@ public class AuthController {
 	private final Response response;
 	
 	@PostMapping("/sign-up")
-	public ResponseEntity<?> signUp(@Validated @RequestBody UserRequest.SignUp signUp, Errors errors) {
+	public ResponseEntity<?> signUp(@Valid @RequestBody UserRequest.SignUp signUp, Errors errors) {
 		if(errors.hasErrors()) {
 			return response.invalidFields(Helper.refineErrors(errors));
 		}

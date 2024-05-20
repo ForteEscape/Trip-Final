@@ -1,12 +1,13 @@
 package com.user.mapper;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
 import com.user.entity.User;
 import com.user.entity.UserInfo;
-import com.user.vo.UserRequest.Email;
 
 @Mapper
 public interface UserMapper {
@@ -22,5 +23,7 @@ public interface UserMapper {
 	void updatePassword(User user);
 
 	User selectByUserNameAndPhone(Map<String, String> paramMap);
+
+	List<String> selectAllUserCode();
 
 }

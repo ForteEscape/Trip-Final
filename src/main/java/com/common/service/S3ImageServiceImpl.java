@@ -71,7 +71,6 @@ public class S3ImageServiceImpl implements S3ImageService {
 	}
 	
 	
-
 	private String uploadToS3Bucket(MultipartFile image) throws IOException {
 		String originalFileName = image.getOriginalFilename();
 		String extension = originalFileName.substring(originalFileName.lastIndexOf("."));
