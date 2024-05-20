@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hotplace.mapper.HotplaceMapper">
+	
+	<resultMap id="hotPlaceInfo" type="HotPlaceInfoEntity">
+		<result column="content_id" property="contentTypeId" />
+		<result column="created_at" property="createdAt"/>
+		<result column="modified_at" property="modifiedAt"/>
+		<result column="recommend_cnt" property="recommendCnt"/>
+		<result column="visit_date" property="visitDate"/>
+		<result column="hotplace_name" property="title"/>
+		<result column="represent_img" property="representImage"/>
+		<result column="place_desc" property="placeDesc"/>
+	</resultMap>
+	
+	<resultMap id="hotPlaceRecommend" type="HotPlaceRecommendEntity">
+		<result column="user_id" property="uid"/>
+		<result column="recommend_time" property="recommendTime"/>
+		<result column="created_at" property="createdAt"/>
+		<result column="modified_at" property="modifiedAt"/>
+	</resultMap>
+	
+	<insert id="insertHotPlace" parameterType="map">
+		insert into hotplace
+		values (null, #{userId}, #{entity.contentId}, #{entity.hotplaceName},
+		#{entity.visitDate}, #{entity.contentTypeId}, #{entity.placeDesc}, sysdate(), sysdate())
+		
+		<selectKey resultType="int" keyColumn="id" keyProperty="entity.id" order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+	
+	<insert id="insertHotPlaceImages" parameterType="map">
+		insert into hotplace_img
+		values
+		<foreach collection="images" item="image" separator=",">
+			(
+				null, #{hid}, #{image}
+			)
+		</foreach>
+	</insert>
+	
+	<insert id="insertRecommendRecord" parameterType="HotPlaceRecommendEntity">
+		insert into hotplace_recommend
+		values (null, #{hid}, #{uid}, sysdate(), #{valid}, sysdate(), sysdate())
+	</insert>
+	
+	<update id="updateRecommendRecord" parameterType="map">
+		update hotplace_recommend
+		set valid=#{valid}, modified_at=sysdate()
+		where hid=#{hid} and user_id=#{uid}
+	</update>
+	
+	<select id="selectAllHotPlace" parameterType="int" resultMap="hotPlaceInfo">
+		select *
+		from hotplace_detail
+		limit 12
+		offset #{offset}
+	</select>
+	
+	<select id="countAllHotPlace">
+		select count(*) from hotplace_detail;
+	</select>
+	
+	<select id="selectHotplaceInfoByHotPlaceId" parameterType="String" resultMap="hotPlaceInfo">
+		select * from hotplace_detail where id = #{id}
+	</select>
+	
+	<select id="selectHotplaceImageByHotPlaceId" parameterType="String" resultType="String">
+		select img_path 
+		from hotplace_img
+		where hid = #{hid}
+	</select>
+	
+	<select id="getRecommendRecord" parameterType="map" resultMap="hotPlaceRecommend">
+		select valid from hotplace_recommend
+		where hid=#{hid} and user_id=#{uid}
+	</select>
+	
+	<select id="selectAllHotPlaceInfo" resultMap="hotPlaceInfo">
+		select * from hotplace_detail;
+	</select>
+	
+	<select id="selectRecommendByHid" parameterType="int" resultMap="hotPlaceRecommend">
+		select * from hotplace_recommend where hid=#{hid}
+	</select>
+</mapper>
