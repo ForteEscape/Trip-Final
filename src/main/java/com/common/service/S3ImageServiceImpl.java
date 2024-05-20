@@ -25,6 +25,7 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.util.IOUtils;
 import com.common.exception.CustomException;
 import com.common.exception.ErrorCode;
+import com.common.util.Directory;
 
 import lombok.RequiredArgsConstructor;
 
@@ -37,45 +38,33 @@ public class S3ImageServiceImpl implements S3ImageService {
 	@Value("${cloud.aws.s3.bucket-name}")
 	private String bucketName;
 	
-	@Value("${cloud.aws.s3.profile-dir}")
-	private String profileDir;
-	
-	@Value("${cloud.aws.s3.hotplace-dir}")
-	private String hotplaceDir;
-	
-	@Value("${cloud.aws.s3.notice-dir}")
-	private String noticeDir;
-	
-	@Value("${cloud.aws.s3.trip-plan-dir}")
-	private String tripPlanDir;
-	
 	private static final String UTF8 = "UTF-8";
 
 	@Override
-	public String upload(MultipartFile image) {
+	public String upload(MultipartFile image, Directory directory) {
 		if(image.isEmpty() || Objects.isNull(image.getOriginalFilename())) {
 			return "";
 		}
 		
-		return this.uploadImage(image);
+		return this.uploadImage(image, directory);
 	}
 
-	private String uploadImage(MultipartFile image) {
+	private String uploadImage(MultipartFile image, Directory directory) {
 		validateImageFileExtension(image.getOriginalFilename());
 		
 		try {
-			return this.uploadToS3Bucket(image);
+			return this.uploadToS3Bucket(image, directory);
 		} catch (IOException e) {
 			throw new CustomException(ErrorCode.IO_EXCEPTION_ON_IMAGE_UPLOAD);
 		}
 	}
 	
 	
-	private String uploadToS3Bucket(MultipartFile image) throws IOException {
+	private String uploadToS3Bucket(MultipartFile image, Directory directory) throws IOException {
 		String originalFileName = image.getOriginalFilename();
 		String extension = originalFileName.substring(originalFileName.lastIndexOf("."));
 		
-		String s3FileName = profileDir + "/" + UUID.randomUUID()
+		String s3FileName = directory.getValue() + "/" + UUID.randomUUID()
 				.toString()
 				.substring(0, 10) + originalFileName;
 		
