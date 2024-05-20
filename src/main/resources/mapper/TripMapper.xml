@@ -3,7 +3,6 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.trip.mapper.TripMapper">
-
 	<resultMap type="AttractionInfo" id="attractionInfo">
 		<result column="content_id" property="contentId"/>
 		<result column="sido_code" property="sidoCode"/>
@@ -63,5 +62,4 @@
 			)
 		</foreach>
 	</insert>
-	
 </mapper>
