@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 public class HotPlaceInfoEntity implements Comparable<HotPlaceInfoEntity>{
 	
 	private int id;
+	private int uid;
 	private String title;
 	private String author;
 	private String visitDate;

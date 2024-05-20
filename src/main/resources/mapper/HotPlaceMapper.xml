@@ -5,7 +5,7 @@
 <mapper namespace="com.hotplace.mapper.HotplaceMapper">
 	
 	<resultMap id="hotPlaceInfo" type="HotPlaceInfoEntity">
-		<result column="content_id" property="contentTypeId" />
+		<result column="content_type" property="contentTypeId" />
 		<result column="created_at" property="createdAt"/>
 		<result column="modified_at" property="modifiedAt"/>
 		<result column="recommend_cnt" property="recommendCnt"/>
@@ -13,6 +13,7 @@
 		<result column="hotplace_name" property="title"/>
 		<result column="represent_img" property="representImage"/>
 		<result column="place_desc" property="placeDesc"/>
+		<result column="uid" property="uid"/>
 	</resultMap>
 	
 	<resultMap id="hotPlaceRecommend" type="HotPlaceRecommendEntity">

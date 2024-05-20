@@ -28,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 public class HotPlaceController {
 
 	private final HotplaceService hotPlaceService;
+	private final int DATA_PER_PAGE = 12;
 
 	@PreAuthorize("hasRole('ROLE_USER')")
 	@PostMapping
@@ -38,7 +39,9 @@ public class HotPlaceController {
 	}
 
 	@GetMapping
-	public ResponseEntity<?> getHotPlaces(@RequestParam("offset") int offset) {
+	public ResponseEntity<?> getHotPlaces(@RequestParam(name="page", required = true) int page) {
+		int offset = (page - 1) * DATA_PER_PAGE;
+		
 		return hotPlaceService.getHotPlaceInfo(offset);
 	}
 	

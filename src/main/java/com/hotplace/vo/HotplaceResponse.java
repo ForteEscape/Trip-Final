@@ -19,6 +19,7 @@ public record HotplaceResponse() {
 	@Builder
 	public static record HotPlaceInfo(
 			int id,
+			int uid,
 			String title,
 			String visitDate,
 			String author,
@@ -30,6 +31,7 @@ public record HotplaceResponse() {
 		public static HotPlaceInfo from(HotPlaceInfoEntity entity) {
 			return HotPlaceInfo.builder()
 					.id(entity.getId())
+					.uid(entity.getUid())
 					.title(entity.getTitle())
 					.visitDate(entity.getVisitDate())
 					.author(entity.getAuthor())
@@ -44,6 +46,7 @@ public record HotplaceResponse() {
 	@Builder
 	public static record HotPlaceDetail(
 			int id,
+			int uid,
 			String title,
 			String visitDate,
 			String author,
@@ -56,6 +59,7 @@ public record HotplaceResponse() {
 		public static HotPlaceDetail from(HotPlaceInfoEntity entity, List<String> imageList) {
 			return HotPlaceDetail.builder()
 					.id(entity.getId())
+					.uid(entity.getUid())
 					.title(entity.getTitle())
 					.visitDate(entity.getVisitDate())
 					.author(entity.getAuthor())
