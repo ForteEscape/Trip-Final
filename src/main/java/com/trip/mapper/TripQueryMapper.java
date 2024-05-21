@@ -7,30 +7,20 @@ import org.apache.ibatis.annotations.Mapper;
 
 import com.attraction.entity.AttractionInfo;
 import com.trip.entity.TripPlanEntity;
+import com.trip.entity.TripPlanReplyEntity;
 import com.trip.vo.TripRequest.SearchFilter;
-import com.trip.vo.TripRequest.TripPlan;
 
 @Mapper
-public interface TripMapper {
-
+public interface TripQueryMapper {
+	
 	List<AttractionInfo> searchAttraction(SearchFilter searchFilter);
-
-	int insertTripPlan(Map<String, Object> paramMap);
-
-	void insertPlaces(Map<String, Object> paramMap);
-
-	void insertTripMembers(Map<String, Object> paramMap);
-
-	void insertSelectedTrip(Map<String, Object> paramMap);
-
+	
 	List<TripPlanEntity> getSelectedTrip(int id);
 
 	List<TripPlanEntity> getUnSelectedTrip(Map<String, Object> paramMap);
 
 	int getSelectedTripByPlanId(Map<String, Object> paramMap);
-
-	void deleteSelectedTrip(Map<String, Object> paramMap);
-
+	
 	TripPlanEntity selectByPlanId(String planId);
 
 	List<AttractionInfo> selectByPlanIdAndDay(Map<String, Object> paramMap);
@@ -38,5 +28,8 @@ public interface TripMapper {
 	List<Integer> selectDay(String planId);
 
 	List<String> getMemberByPlanId(String planId);
+	
+	List<TripPlanReplyEntity> selectAllReplies(String planId);
 
+	TripPlanReplyEntity getReplyByIdAndPlanId(String replyId);
 }

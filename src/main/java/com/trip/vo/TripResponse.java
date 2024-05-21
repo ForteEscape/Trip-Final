@@ -3,6 +3,7 @@ package com.trip.vo;
 import java.util.List;
 
 import com.trip.entity.TripPlanEntity;
+import com.trip.entity.TripPlanReplyEntity;
 
 import lombok.Builder;
 
@@ -96,6 +97,27 @@ public record TripResponse() {
 					.author(entity.getAuthor())
 					.members(members)
 					.attractions(places)
+					.build();
+		}
+	}
+	
+	@Builder
+	public static record TripPlanReply(
+			int id,
+			int userId,
+			String author,
+			int planId,
+			String content,
+			String writeDate) {
+		
+		public static TripPlanReply from(TripPlanReplyEntity entity) {
+			return TripPlanReply.builder()
+					.id(entity.getId())
+					.userId(entity.getUserId())
+					.author(entity.getAuthor())
+					.planId(entity.getPlanId())
+					.content(entity.getContent())
+					.writeDate(entity.getWriteDate())
 					.build();
 		}
 	}
