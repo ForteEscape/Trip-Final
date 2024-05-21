@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.trip.mapper.TripCommandMapper">
+	<insert id="insertTripPlan" parameterType="map">
+		insert into trip_plan
+		values(null, #{trip.planName}, #{trip.startDate}, #{trip.endDate}, #{user.id})
+		
+		<selectKey resultType="int" keyProperty="trip.id" keyColumn="id" order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+	
+	<insert id="insertTripMembers" parameterType="map">
+		insert into trip_plan_participate
+		values
+		<foreach collection="members" item="member" separator=",">
+			(
+				null, #{planId}, #{member}
+			)
+		</foreach>
+	</insert>
+	
+	<insert id="insertPlaces" parameterType="map">
+		insert into trip_plan_places 
+		values
+		<foreach collection="places" item="place" index="idx" separator=",">
+			(
+				null, #{planId}, #{place}, #{day}, #{idx} + 1 
+			)
+		</foreach>
+	</insert>
+	
+	<insert id="insertSelectedTrip" parameterType="map">
+		insert into selected_trip
+		values(null, #{planId}, #{userId})
+	</insert>
+	
+	<insert id="insertReply" parameterType="TripPlanEntity">
+		insert into trip_plan_reply
+		values(null, #{userId}, #{planId}, sysdate(), #{content}, sysdate(), sysdate())
+	</insert>
+	
+	<delete id="deleteSelectedTrip" parameterType="map">
+		delete from selected_trip
+		where user_id = #{userId} and plan_id = #{planId}
+	</delete>
+	
+	<delete id="deleteTripPlan" parameterType="String">
+		delete from trip_plan
+		where id=#{planId}
+	</delete>
+	
+	<delete id="deleteReply" parameterType="String">
+		delete from trip_plan_reply
+		where id=#{replyId}
+	</delete>
+</mapper>

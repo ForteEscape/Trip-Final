@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.trip.mapper.TripMapper">
+<mapper namespace="com.trip.mapper.TripQueryMapper">
 
 	<resultMap type="AttractionInfo" id="attractionInfo">
 		<result column="content_id" property="contentId"/>
@@ -18,6 +18,12 @@
 		<result column="start_date" property="startDate"/>
 		<result column="end_date" property="endDate"/>
 		<result column="user_id" property="userId"/>
+	</resultMap>
+	
+	<resultMap id="tripPlanReplyEntity" type="TripPlanReplyEntity">
+		<result column="user_id" property="userId"/>
+		<result column="plan_id" property="planId"/>
+		<result column="write_date" property="writeDate"/>
 	</resultMap>
 	
 	<select id="getSelectedTrip" parameterType="int" resultMap="tripPlanEntity">
@@ -66,42 +72,51 @@
 		</where> 
 	</select>
 	
-	<insert id="insertTripPlan" parameterType="map">
-		insert into trip_plan
-		values(null, #{trip.planName}, #{trip.startDate}, #{trip.endDate}, #{user.id})
-		
-		<selectKey resultType="int" keyProperty="trip.id" keyColumn="id" order="AFTER">
-			SELECT LAST_INSERT_ID()
-		</selectKey>
-	</insert>
+	<select id="selectByPlanId" parameterType="String" resultMap="tripPlanEntity">
+		select tp.id, tp.plan_name, tp.start_date, tp.end_date, tp.user_id, u.name as author
+		from trip_plan tp
+		inner join user u
+		on tp.user_id = u.id
+		where tp.id = #{planId};
+
+	</select>
 	
-	<insert id="insertTripMembers" parameterType="map">
-		insert into trip_plan_participate
-		values
-		<foreach collection="members" item="member" separator=",">
-			(
-				null, #{planId}, #{member}
-			)
-		</foreach>
-	</insert>
+	<select id="selectDay" parameterType="String" resultType="Integer">
+		select distinct day from trip_plan_places
+		where plan_id = #{planId}
+	</select>
 	
-	<insert id="insertPlaces" parameterType="map">
-		insert into trip_plan_places 
-		values
-		<foreach collection="places" item="place" separator=",">
-			(
-				null, #{planId}, #{place}, #{day}
-			)
-		</foreach>
-	</insert>
+	<select id="getMemberByPlanId" parameterType="String" resultType="String">
+		select u.email
+		from trip_plan_participate tpp
+		inner join user u
+		on tpp.user_code = u.user_code
+		where tpp.plan_id = #{planId};
+	</select>
 	
-	<insert id="insertSelectedTrip" parameterType="map">
-		insert into selected_trip
-		values(null, #{planId}, #{userId})
-	</insert>
+	<select id="selectByPlanIdAndDay" parameterType="map" resultMap="attractionInfo">
+		select * from attraction_info
+		where content_id in (
+			select content_id
+			from trip_plan_places
+			where plan_id = #{planId} and day = #{day}
+			order by visit_sequence asc
+		)
+	</select>
 	
-	<delete id="deleteSelectedTrip" parameterType="map">
-		delete from selected_trip
-		where user_id = #{userId} and plan_id = #{planId}
-	</delete>
+	<select id="selectAllReplies" parameterType="String" resultMap="tripPlanReplyEntity">
+		select tpp.id, tpp.user_id, tpp.plan_id, tpp.write_date, tpp.content, u.name as author
+		from trip_plan_reply tpp
+		inner join user u
+		on tpp.user_id = u.id
+		where tpp.plan_id = #{planId}
+	</select>
+	
+	<select id="getReplyByIdAndPlanId" parameterType="String" resultMap="tripPlanReplyEntity">
+		select tpp.id, tpp.user_id, tpp.plan_id, tpp.write_date, tpp.content, u.name as author
+		from trip_plan_reply tpp
+		inner join user u
+		on tpp.user_id = u.id
+		where tpp.id = #{replyId}
+	</select>
 </mapper>

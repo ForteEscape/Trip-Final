@@ -16,7 +16,9 @@ public enum ErrorCode {
 	IO_EXCEPTION_ON_IMAGE_DELETE(HttpStatus.INTERNAL_SERVER_ERROR, "S3 데이터 삭제 중 오류가 발생했습니다."), 
 	INVALID_START_DATE(HttpStatus.BAD_REQUEST, "시작 날자는 오늘보다 이전일 수 없습니다."),
 	INVALID_END_DATE(HttpStatus.BAD_REQUEST, "잘못된 종료 날자입니다. 종료 날자는 시작 날자보다 이전이거나, 오늘보다 이전일 수 없습니다."), 
-	MY_BATIS_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR, "MyBaits와 통신 중 문제가 발생했습니다.")
+	MY_BATIS_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR, "MyBaits와 통신 중 문제가 발생했습니다."), 
+	PLAN_NOT_EXISTS(HttpStatus.BAD_REQUEST, "잘못된 계획 접근입니다."), 
+	ILLEGAL_USER_ACCESS(HttpStatus.BAD_REQUEST, "잘못된 유저 접근입니다.")
 	;
 	
 	private final HttpStatus httpStatus;

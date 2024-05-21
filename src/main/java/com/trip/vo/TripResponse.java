@@ -3,6 +3,7 @@ package com.trip.vo;
 import java.util.List;
 
 import com.trip.entity.TripPlanEntity;
+import com.trip.entity.TripPlanReplyEntity;
 
 import lombok.Builder;
 
@@ -81,8 +82,43 @@ public record TripResponse() {
 			String endDate,
 			int userId,
 			String author,
-			List<String> members
-			) {
+			List<String> members,
+			List<List<TripResponse.AttractionInfo>> attractions) {
 		
+		public static TripPlanDetail from(TripPlanEntity entity, 
+				List<List<TripResponse.AttractionInfo>> places, List<String> members) {
+			
+			return TripPlanDetail.builder()
+					.id(entity.getId())
+					.planName(entity.getPlanName())
+					.startDate(entity.getStartDate().toString())
+					.endDate(entity.getEndDate().toString())
+					.userId(entity.getUserId())
+					.author(entity.getAuthor())
+					.members(members)
+					.attractions(places)
+					.build();
+		}
+	}
+	
+	@Builder
+	public static record TripPlanReply(
+			int id,
+			int userId,
+			String author,
+			int planId,
+			String content,
+			String writeDate) {
+		
+		public static TripPlanReply from(TripPlanReplyEntity entity) {
+			return TripPlanReply.builder()
+					.id(entity.getId())
+					.userId(entity.getUserId())
+					.author(entity.getAuthor())
+					.planId(entity.getPlanId())
+					.content(entity.getContent())
+					.writeDate(entity.getWriteDate())
+					.build();
+		}
 	}
 }
