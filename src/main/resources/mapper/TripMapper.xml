@@ -66,6 +66,38 @@
 		</where> 
 	</select>
 	
+	<select id="selectByPlanId" parameterType="String" resultMap="tripPlanEntity">
+		select tp.id, tp.plan_name, tp.start_date, tp.end_date, tp.user_id, u.name as author
+		from trip_plan tp
+		inner join user u
+		on tp.user_id = u.id
+		where tp.id = #{planId};
+
+	</select>
+	
+	<select id="selectDay" parameterType="String" resultType="Integer">
+		select distinct day from trip_plan_places
+		where plan_id = #{planId}
+	</select>
+	
+	<select id="getMemberByPlanId" parameterType="String" resultType="String">
+		select u.email
+		from trip_plan_participate tpp
+		inner join user u
+		on tpp.user_code = u.user_code
+		where tpp.plan_id = #{planId};
+	</select>
+	
+	<select id="selectByPlanIdAndDay" parameterType="map" resultMap="attractionInfo">
+		select * from attraction_info
+		where content_id in (
+			select content_id
+			from trip_plan_places
+			where plan_id = #{planId} and day = #{day}
+			order by visit_sequence asc
+		)
+	</select>
+	
 	<insert id="insertTripPlan" parameterType="map">
 		insert into trip_plan
 		values(null, #{trip.planName}, #{trip.startDate}, #{trip.endDate}, #{user.id})
@@ -88,9 +120,9 @@
 	<insert id="insertPlaces" parameterType="map">
 		insert into trip_plan_places 
 		values
-		<foreach collection="places" item="place" separator=",">
+		<foreach collection="places" item="place" index="idx" separator=",">
 			(
-				null, #{planId}, #{place}, #{day}
+				null, #{planId}, #{place}, #{day}, #{idx} + 1 
 			)
 		</foreach>
 	</insert>

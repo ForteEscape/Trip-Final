@@ -53,15 +53,23 @@ public class TripController {
 		return tripService.getTripPlan(principal.getName());
 	}
 	
+	// 선택
 	@PreAuthorize("hasRole('ROLE_USER')")
 	@GetMapping("/{planId}/select")
 	public ResponseEntity<?> selectTripPlan(@PathVariable("planId") String planId, Principal principal) {
 		return tripService.selectTripPlan(planId, principal.getName());
 	}
 	
+	// 선택 취소
 	@PreAuthorize("hasRole('ROLE_USER')")
 	@GetMapping("/{planId}/unselect")
 	public ResponseEntity<?> unselectTripPlan(@PathVariable("planId") String planId, Principal principal) {
 		return tripService.unselectTripPlan(planId, principal.getName());
 	}
-}
+	
+	@GetMapping("/{planId}")
+	public ResponseEntity<?> getTripPlanDetail(@PathVariable("planId") String planId) {
+		return tripService.getTripDetail(planId);
+	}
+} 
+ 

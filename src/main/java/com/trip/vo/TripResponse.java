@@ -81,8 +81,22 @@ public record TripResponse() {
 			String endDate,
 			int userId,
 			String author,
-			List<String> members
-			) {
+			List<String> members,
+			List<List<TripResponse.AttractionInfo>> attractions) {
 		
+		public static TripPlanDetail from(TripPlanEntity entity, 
+				List<List<TripResponse.AttractionInfo>> places, List<String> members) {
+			
+			return TripPlanDetail.builder()
+					.id(entity.getId())
+					.planName(entity.getPlanName())
+					.startDate(entity.getStartDate().toString())
+					.endDate(entity.getEndDate().toString())
+					.userId(entity.getUserId())
+					.author(entity.getAuthor())
+					.members(members)
+					.attractions(places)
+					.build();
+		}
 	}
 }

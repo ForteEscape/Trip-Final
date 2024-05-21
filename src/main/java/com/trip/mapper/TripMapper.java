@@ -31,4 +31,12 @@ public interface TripMapper {
 
 	void deleteSelectedTrip(Map<String, Object> paramMap);
 
+	TripPlanEntity selectByPlanId(String planId);
+
+	List<AttractionInfo> selectByPlanIdAndDay(Map<String, Object> paramMap);
+
+	List<Integer> selectDay(String planId);
+
+	List<String> getMemberByPlanId(String planId);
+
 }

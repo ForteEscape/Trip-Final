@@ -2,6 +2,7 @@ package com.trip.service;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,6 +24,7 @@ import com.trip.mapper.TripMapper;
 import com.trip.vo.TripRequest.SearchFilter;
 import com.trip.vo.TripRequest.TripPlan;
 import com.trip.vo.TripResponse;
+import com.trip.vo.TripResponse.TripPlanDetail;
 import com.trip.vo.TripResponse.TripPlanResponse;
 import com.user.entity.User;
 import com.user.mapper.UserMapper;
@@ -218,6 +220,39 @@ public class TripServiceImpl implements TripService {
 		}
 		
 		return response.success("선택 취소 처리 성공");
+	}
+
+	// 해당 여행 정보 가져오기
+	// 여행 정보에 있는 관광지들 가져오기
+	// 여행 계획에 참여하는 사람들 불러오기
+	@Transactional(readOnly = true)
+	@Override
+	public ResponseEntity<?> getTripDetail(String planId) {
+		TripPlanEntity entity = tripMapper.selectByPlanId(planId);
+		
+		if(entity == null) {
+			return response.fail("잘못된 접근입니다.", HttpStatus.BAD_REQUEST);
+		}
+		
+		List<Integer> dayList = tripMapper.selectDay(planId);
+		List<List<TripResponse.AttractionInfo>> result = new ArrayList<>();
+		
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("planId", planId);
+		
+		for(int day: dayList) {
+			paramMap.put("day", day);
+			
+			List<TripResponse.AttractionInfo> element = tripMapper.selectByPlanIdAndDay(paramMap).stream()
+					.map(TripResponse.AttractionInfo::from)
+					.toList();
+			result.add(element);
+		}
+		
+		List<String> members = tripMapper.getMemberByPlanId(planId);
+		TripPlanDetail plan = TripPlanDetail.from(entity, result, members);
+		
+		return response.success(plan, "계획 상세 조회 성공", HttpStatus.OK);
 	}
 
 }

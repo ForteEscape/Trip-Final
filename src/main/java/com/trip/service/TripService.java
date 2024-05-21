@@ -16,5 +16,7 @@ public interface TripService {
 	ResponseEntity<?> selectTripPlan(String planId, String userEmail);
 
 	ResponseEntity<?> unselectTripPlan(String planId, String name);
+
+	ResponseEntity<?> getTripDetail(String planId);
 	
 }
