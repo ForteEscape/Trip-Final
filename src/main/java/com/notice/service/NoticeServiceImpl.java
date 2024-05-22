@@ -68,7 +68,7 @@ public class NoticeServiceImpl implements NoticeService {
 
 	@Transactional
 	@Override
-	public ResponseEntity<?> createNotice(List<MultipartFile> files, NoticeData noticeData, String userEmail) {
+	public ResponseEntity<?> createNotice(NoticeData noticeData, String userEmail) {
 		User user = userMapper.selectByEmail(userEmail);
 
 		if (user == null || !user.getRole().equals(RoleType.ADMIN.getRole())) {
@@ -82,33 +82,14 @@ public class NoticeServiceImpl implements NoticeService {
 				.viewCount(0)
 				.build();
 
-		// TODO: 사진 저장해야함
-		List<String> imagePaths = new ArrayList<>();
-
-		files.forEach(file -> {
-			String path = imageService.upload(file, Directory.NOTICE);
-
-			if (!path.equals("")) {
-				imagePaths.add(path);
-			}
-		});
-
 		noticeCommandMapper.insertNotice(entity);
-
-		if (imagePaths.size() > 0) {
-			Map<String, Object> paramMap = new HashMap<>();
-			paramMap.put("noticeId", entity.getId());
-			paramMap.put("images", imagePaths);
-			
-			noticeCommandMapper.insertImages(paramMap);
-		}
 
 		return response.success("공지 작성 성공");
 	}
 
 	@Transactional
 	@Override
-	public ResponseEntity<?> updateNotice(String noticeId, List<MultipartFile> images, ModifiedNotice modifiedNotice,
+	public ResponseEntity<?> updateNotice(String noticeId, ModifiedNotice modifiedNotice,
 			String userEmail) {
 		User user = userMapper.selectByEmail(userEmail);
 
@@ -126,27 +107,10 @@ public class NoticeServiceImpl implements NoticeService {
 		currentImage.forEach(path -> imageService.deleteImage(path));
 		noticeCommandMapper.deleteImageByNoticeId(noticeId);
 		
-		List<String> newImage = new ArrayList<>();
-		images.forEach(image -> {
-			String path = imageService.upload(image, Directory.NOTICE);
-			
-			if(!path.equals("")) {
-				newImage.add(path);
-			}
-		});
-
 		entity.modifyTitle(modifiedNotice.title());
 		entity.modifyContent(modifiedNotice.content());
 
 		noticeCommandMapper.updateNotice(entity);
-		
-		if(newImage.size() > 0) {
-			Map<String, Object> paramMap = new HashMap<>();
-			paramMap.put("noticeId", entity.getId());
-			paramMap.put("images", newImage);
-			
-			noticeCommandMapper.insertImages(paramMap);
-		}
 
 		return response.success("공지 수정 완료");
 	}

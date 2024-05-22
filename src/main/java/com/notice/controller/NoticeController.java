@@ -69,10 +69,9 @@ public class NoticeController {
 			@ApiResponse(responseCode = "500", description = "서버 에러가 발생했습니다.")
 	})
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> createNotice(@RequestPart("images") List<MultipartFile> files,
-			@Valid @RequestPart("data") NoticeData noticeData, Principal principal) {
-		return noticeService.createNotice(files, noticeData, principal.getName());
+	@PostMapping
+	public ResponseEntity<?> createNotice(@Valid @RequestBody NoticeData noticeData, Principal principal) {
+		return noticeService.createNotice(noticeData, principal.getName());
 	}
 
 	@Operation(summary = "공지사항 상세 조회", description = "공지사항 상세 조회 api")
@@ -96,10 +95,9 @@ public class NoticeController {
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PutMapping("/{noticeId}")
 	public ResponseEntity<?> updateNotice(@PathVariable("noticeId") String noticeId,
-			@RequestPart("images") List<MultipartFile> images,
-			@Valid @RequestPart("data") ModifiedNotice modifiedNotice, Principal principal) {
+			@Valid @RequestBody ModifiedNotice modifiedNotice, Principal principal) {
 		
-		return noticeService.updateNotice(noticeId, images, modifiedNotice, principal.getName());
+		return noticeService.updateNotice(noticeId, modifiedNotice, principal.getName());
 	}
 
 	@Operation(summary = "공지사항 삭제", description = "공지사항 삭제 api")
@@ -122,7 +120,6 @@ public class NoticeController {
 			@ApiResponse(responseCode = "400", description = "입력 값에 오류가 있습니다."),
 			@ApiResponse(responseCode = "500", description = "서버 에러가 발생했습니다.")
 	})
-	
 	@GetMapping("/latest")
 	public ResponseEntity<?> getLatestNotice() {
 		return noticeService.getLatestNotice();
