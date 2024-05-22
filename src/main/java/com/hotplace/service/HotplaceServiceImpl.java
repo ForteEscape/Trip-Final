@@ -1,5 +1,6 @@
 package com.hotplace.service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +27,7 @@ import com.hotplace.vo.HotplaceRequest.HotPlace;
 import com.hotplace.vo.HotplaceResponse;
 import com.hotplace.vo.HotplaceResponse.HotPlaceDetail;
 import com.hotplace.vo.HotplaceResponse.HotPlaceInfo;
-import com.hotplace.vo.HotplaceResponse.PageInfo;
+import com.hotplace.vo.HotplaceResponse.HotPlacePageInfo;
 import com.user.entity.User;
 import com.user.mapper.UserMapper;
 
@@ -49,6 +50,11 @@ public class HotplaceServiceImpl implements HotplaceService {
 	public ResponseEntity<?> addNewHotPlace(List<MultipartFile> images, HotPlace hotPlace, String userEmail) {
 		try {
 			User authUser = userMapper.selectByEmail(userEmail);
+			
+			if(hotPlace.visitDate().isAfter(LocalDate.now())) {
+				return response.fail("잘못된 방문 날자입니다.", HttpStatus.BAD_REQUEST);
+			}
+			
 			HotPlaceEntity entity = HotPlaceEntity.from(hotPlace);
 			
 			Map<String, Object> paramMap = new HashMap<>();
@@ -96,7 +102,7 @@ public class HotplaceServiceImpl implements HotplaceService {
 		int totalCount = hotplaceMapper.countAllHotPlace();
 		int currentOffset = offset;
 		
-		PageInfo page = new PageInfo(currentOffset, result, totalCount);
+		HotPlacePageInfo page = new HotPlacePageInfo(currentOffset, result, totalCount);
 		
 		return response.success(page, "hotplcae info 정보 불러오기 성공", HttpStatus.OK);
 	}
