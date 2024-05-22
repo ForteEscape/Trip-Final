@@ -84,12 +84,9 @@ public record NoticeResponse() {
 			String writeDate,
 			
 			@Schema(description = "조회수")
-			int viewCount,
-			
-			@ArraySchema(schema = @Schema(description = "이미지 경로 데이터"))
-			List<String> images) {
+			int viewCount) {
 		
-		public static NoticeDetail from(NoticeEntity entity, List<String> images) {
+		public static NoticeDetail from(NoticeEntity entity) {
 			return NoticeDetail.builder()
 					.id(entity.getId())
 					.userId(entity.getUserId())
@@ -98,7 +95,6 @@ public record NoticeResponse() {
 					.content(entity.getContent())
 					.writeDate(entity.getWriteDate())
 					.viewCount(entity.getViewCount())
-					.images(images)
 					.build();
 		}
 	}

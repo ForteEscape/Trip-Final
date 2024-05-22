@@ -1,19 +1,13 @@
 package com.notice.service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.common.dto.Response;
-import com.common.service.S3ImageService;
-import com.common.util.Directory;
 import com.notice.entity.NoticeEntity;
 import com.notice.mapper.NoticeCommandMapper;
 import com.notice.mapper.NoticeQueryMapper;
@@ -34,7 +28,6 @@ public class NoticeServiceImpl implements NoticeService {
 
 	private final NoticeCommandMapper noticeCommandMapper;
 	private final NoticeQueryMapper noticeQueryMapper;
-	private final S3ImageService imageService;
 	private final UserMapper userMapper;
 	private final Response response;
 
@@ -58,9 +51,7 @@ public class NoticeServiceImpl implements NoticeService {
 			return response.fail("잘못된 접근입니다.", HttpStatus.BAD_REQUEST);
 		}
 
-		List<String> imageList = noticeQueryMapper.selectImageByNoticeId(noticeId);
-		NoticeDetail result = NoticeDetail.from(entity, imageList);
-		
+		NoticeDetail result = NoticeDetail.from(entity);
 		noticeCommandMapper.increaseViewCount(entity.getId());
 
 		return response.success(result, "공지 상세 조회 성공", HttpStatus.OK);
@@ -102,10 +93,6 @@ public class NoticeServiceImpl implements NoticeService {
 		if (entity == null || entity.getUserId() != user.getId()) {
 			return response.fail("잘못된 접근입니다.", HttpStatus.BAD_REQUEST);
 		}
-
-		List<String> currentImage = noticeQueryMapper.selectImageByNoticeId(noticeId);
-		currentImage.forEach(path -> imageService.deleteImage(path));
-		noticeCommandMapper.deleteImageByNoticeId(noticeId);
 		
 		entity.modifyTitle(modifiedNotice.title());
 		entity.modifyContent(modifiedNotice.content());
@@ -130,11 +117,6 @@ public class NoticeServiceImpl implements NoticeService {
 			return response.fail("잘못된 접근입니다.", HttpStatus.BAD_REQUEST);
 		}
 
-		// TODO: 해당 notice에 저장되어 있는 모든 사진 데이터들을 먼저 삭제해야 한다.
-		List<String> images = noticeQueryMapper.selectImageByNoticeId(noticeId);
-		images.forEach(path -> imageService.deleteImage(path));
-
-		noticeCommandMapper.deleteImageByNoticeId(noticeId);
 		noticeCommandMapper.deleteNotice(entity.getId());
 
 		return response.success("공지 삭제 성공");
