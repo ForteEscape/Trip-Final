@@ -175,4 +175,14 @@ public class NoticeServiceImpl implements NoticeService {
 
 		return response.success("공지 삭제 성공");
 	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public ResponseEntity<?> getLatestNotice() {
+		List<Notice> resultList = noticeQueryMapper.getLatestNotice().stream()
+				.map(Notice::from)
+				.toList();
+		
+		return response.success(resultList, "최신 공지 5개 조회 성공", HttpStatus.OK);
+	}
 }

@@ -19,4 +19,6 @@ public interface NoticeService {
 	ResponseEntity<?> deleteNotice(String noticeId, String userEmail);
 
 	ResponseEntity<?> createNotice(List<MultipartFile> files, NoticeData noticeData, String userEmail);
+
+	ResponseEntity<?> getLatestNotice();
 }

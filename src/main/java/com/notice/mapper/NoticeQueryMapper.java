@@ -16,5 +16,7 @@ public interface NoticeQueryMapper {
 	List<String> selectImageByNoticeId(String noticeId);
 	
 	NoticeEntity selectOne(String noticeId);
+
+	List<NoticeEntity> getLatestNotice();
 	
 }
