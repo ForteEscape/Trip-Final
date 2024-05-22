@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.notice.mapper.NoticeCommandMapper">
+	
+	<insert id="insertNotice" parameterType="NoticeEntity">
+		insert into notice
+		values(null, #{userId}, #{title}, #{content}, #{viewCount}, sysdate(), sysdate(), sysdate())
+		
+		<selectKey resultType="int" keyProperty="id" keyColumn="id" order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+	
+	<insert id="insertImages" parameterType="map">
+		insert into notice_img
+		values
+		<foreach collection="images" item="image" separator=",">
+			(
+				null, #{noticeId}, #{image}
+			)
+		</foreach>
+	</insert>
+	
+	<update id="updateNotice" parameterType="NoticeEntity">
+		update notice
+		set title = #{title}, content = #{content}, modified_at = sysdate()
+		where id = #{id}
+	</update>
+	
+	<update id="increaseViewCount" parameterType="int">
+		update notice
+		set view_count = view_count + 1
+		where id=#{noticeId}
+	</update>
+	
+	<delete id="deleteNotice" parameterType="int">
+		delete from notice where id=#{noticeId}
+	</delete>
+	
+	<delete id="deleteImageByNoticeId" parameterType="String">
+		delete from notice_img where notice_id = #{noticeId}
+	</delete>
+	
+</mapper>
