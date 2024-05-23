@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.hotplace.mapper.HotplaceMapper">
+<mapper namespace="com.hotplace.mapper.HotPlaceQueryMapper">
 	
 	<resultMap id="hotPlaceInfo" type="HotPlaceInfoEntity">
 		<result column="content_type" property="contentTypeId" />
@@ -29,42 +29,6 @@
 		<result column="write_date" property="writeDate"/>
 		<result column="user_image" property="userImage"/>
 	</resultMap>
-	
-	<insert id="insertHotPlace" parameterType="map">
-		insert into hotplace
-		values (null, #{userId}, #{entity.contentId}, #{entity.hotplaceName},
-		#{entity.visitDate}, #{entity.contentTypeId}, #{entity.placeDesc}, sysdate(), sysdate())
-		
-		<selectKey resultType="int" keyColumn="id" keyProperty="entity.id" order="AFTER">
-			SELECT LAST_INSERT_ID()
-		</selectKey>
-	</insert>
-	
-	<insert id="insertHotPlaceImages" parameterType="map">
-		insert into hotplace_img
-		values
-		<foreach collection="images" item="image" separator=",">
-			(
-				null, #{hid}, #{image}
-			)
-		</foreach>
-	</insert>
-	
-	<insert id="insertRecommendRecord" parameterType="HotPlaceRecommendEntity">
-		insert into hotplace_recommend
-		values (null, #{hid}, #{uid}, sysdate(), #{valid}, sysdate(), sysdate())
-	</insert>
-	
-	<insert id="insertReply" parameterType="HotPlaceReplyEntity">
-		insert into hotplace_reply
-		values(null, #{hotplaceId}, #{userId}, sysdate(), #{content}, sysdate(), sysdate())
-	</insert>
-	
-	<update id="updateRecommendRecord" parameterType="map">
-		update hotplace_recommend
-		set valid=#{valid}, modified_at=sysdate()
-		where hid=#{hid} and user_id=#{uid}
-	</update>
 	
 	<select id="selectAllHotPlace" parameterType="int" resultMap="hotPlaceInfo">
 		select *
@@ -116,7 +80,4 @@
 		where hr.id = #{replyId}
 	</select>
 	
-	<delete id="deleteReply" parameterType="String">
-		delete from hotplace_reply where id = #{replyId}
-	</delete>
 </mapper>
