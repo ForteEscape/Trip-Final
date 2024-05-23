@@ -56,7 +56,7 @@ public class TripController {
 			}),
 			@ApiResponse(responseCode = "500", description = "서버 에러가 발생했습니다.")
 	})
-	@PreAuthorize("hasRole('ROLE_USER')")
+	@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
 	@PostMapping("/search")
 	public ResponseEntity<?> searchAttraction(@RequestBody SearchFilter searchFilter) {
 		return tripQueryService.searchAttraction(searchFilter);

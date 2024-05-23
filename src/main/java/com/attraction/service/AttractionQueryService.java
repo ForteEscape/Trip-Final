@@ -7,4 +7,6 @@ public interface AttractionQueryService {
 	ResponseEntity<?> selectAllCity();
 	
 	ResponseEntity<?> selectGugunBySidoId(String sidoId);
+	
+	ResponseEntity<?> selectByContentId(String contentId);
 }

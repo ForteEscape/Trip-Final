@@ -11,6 +11,7 @@ import com.attraction.service.AttractionQueryService;
 import com.attraction.service.AttractionService;
 import com.attraction.vo.AttractionResponse.Gugun;
 import com.attraction.vo.AttractionResponse.Sido;
+import com.attraction.vo.AttractionResponse.SimpleAttractionInfo;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -68,5 +69,18 @@ public class AttractionController {
 			@Parameter(name = "cityCode", description = "찾을 군/구의 소속 시/도 코드입니다.", example = "1", required = true) 
 			@PathVariable("cityCode") String cityCode) {
 		return attractionQueryService.selectGugunBySidoId(cityCode);
+	}
+	
+	@Operation(summary = "관광지 조회", description = "관광지 조회 api")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "관광지 데이터 불러오기 성공", content = {
+					@Content(schema = @Schema(implementation =  SimpleAttractionInfo.class))
+			}),
+			@ApiResponse(responseCode = "500", description = "서버 에러가 발생했습니다.")
+	})
+	@Parameter(name = "contentId", description = "찾을 관광지의 코드입니다.", example = "123456", required = true)
+	@GetMapping("/{contentId}")
+	public ResponseEntity<?> getAttractionSimple(@PathVariable("contentId") String contentId) {
+		return attractionQueryService.selectByContentId(contentId);
 	}
 }

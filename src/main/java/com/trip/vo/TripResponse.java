@@ -199,7 +199,10 @@ public record TripResponse() {
 			String content,
 			
 			@Schema(description = "작성 일자")
-			String writeDate) {
+			String writeDate,
+			
+			@Schema(description = "유저 프로필 이미지")
+			String userImage) {
 		
 		public static TripPlanReply from(TripPlanReplyEntity entity) {
 			return TripPlanReply.builder()
@@ -209,6 +212,7 @@ public record TripResponse() {
 					.planId(entity.getPlanId())
 					.content(entity.getContent())
 					.writeDate(entity.getWriteDate())
+					.userImage(entity.getUserImage())
 					.build();
 		}
 	}
