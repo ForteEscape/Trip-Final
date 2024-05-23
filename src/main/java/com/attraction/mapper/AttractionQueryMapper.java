@@ -20,4 +20,7 @@ public interface AttractionQueryMapper {
 	List<AttractionInfo> selectAllAttractionInfo();
 
 	AttractionInfo selectByContentId(String contentId);
+
+	int getAttractionCount();
+	
 }

@@ -29,4 +29,6 @@ public interface UserService {
 	ResponseEntity<?> findUserEmail(Email emailForm);
 
 	ResponseEntity<?> validateEmail(EmailValidate email);
+
+	ResponseEntity<?> countAllUser();
 }
