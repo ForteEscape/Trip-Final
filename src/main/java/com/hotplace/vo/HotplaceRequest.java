@@ -34,4 +34,12 @@ public record HotplaceRequest() {
 			String placeDesc) {
 		
 	}
+	
+	@Schema(description = "댓글 데이터 DTO")
+	public static record Reply(
+			@NotBlank(message = "댓글 내용은 비어 있을 수 없습니다.") 
+			@Schema(description = "내용 데이터", example = "test reply")
+			String content) {
+		
+	}
 }

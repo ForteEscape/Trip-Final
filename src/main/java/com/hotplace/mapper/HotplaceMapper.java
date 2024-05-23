@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 import com.hotplace.entity.HotPlaceInfoEntity;
 import com.hotplace.entity.HotPlaceRecommendEntity;
+import com.hotplace.entity.HotPlaceReplyEntity;
 
 @Mapper
 public interface HotplaceMapper {
@@ -32,5 +33,7 @@ public interface HotplaceMapper {
 	List<HotPlaceInfoEntity> selectAllHotPlace(int offset);
 	
 	List<String> selectHotplaceImageByHotPlaceId(String hotPlaceId);
+
+	void inesrtReply(HotPlaceReplyEntity replyEntity);
 
 }

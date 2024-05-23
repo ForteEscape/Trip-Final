@@ -3,6 +3,8 @@ package com.hotplace.vo;
 import java.util.List;
 
 import com.hotplace.entity.HotPlaceInfoEntity;
+import com.hotplace.entity.HotPlaceReplyEntity;
+import com.trip.vo.TripResponse.TripPlanReply;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -116,6 +118,43 @@ public record HotplaceResponse() {
 					.createdAt(entity.getCreatedAt())
 					.build();
 		}
+	}
+	
+	@Schema(description = "핫플레이스 댓글")
+	@Builder
+	public static record HotPlaceReply(
+			
+			@Schema(description = "댓글 id")
+			int id,
+			
+			@Schema(description = "댓글 작성 유저 id")
+			int userId,
+			
+			@Schema(description = "댓글 작성 유저 이름")
+			String author,
+			
+			@Schema(description = "핫플레이스 id")
+			int hotplaceId,
+			
+			@Schema(description = "내용")
+			String content,
+			
+			@Schema(description = "작성 일자")
+			String writeDate,
+			
+			@Schema(description = "유저 프로필 이미지")
+			String userImage) {
 		
+		public static HotPlaceReply from(HotPlaceReplyEntity entity) {
+			return HotPlaceReply.builder()
+					.id(entity.getId())
+					.userId(entity.getUserId())
+					.author(entity.getAuthor())
+					.hotplaceId(entity.getHotplaceId())
+					.content(entity.getContent())
+					.writeDate(entity.getWriteDate())
+					.userImage(entity.getUserImage())
+					.build();
+		}
 	}
 }

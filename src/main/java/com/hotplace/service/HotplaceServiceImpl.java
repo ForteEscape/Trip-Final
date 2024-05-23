@@ -21,9 +21,11 @@ import com.common.util.Directory;
 import com.hotplace.entity.HotPlaceEntity;
 import com.hotplace.entity.HotPlaceInfoEntity;
 import com.hotplace.entity.HotPlaceRecommendEntity;
+import com.hotplace.entity.HotPlaceReplyEntity;
 import com.hotplace.mapper.HotplaceMapper;
 import com.hotplace.util.WeightCalculator;
 import com.hotplace.vo.HotplaceRequest.HotPlace;
+import com.hotplace.vo.HotplaceRequest.Reply;
 import com.hotplace.vo.HotplaceResponse;
 import com.hotplace.vo.HotplaceResponse.HotPlaceDetail;
 import com.hotplace.vo.HotplaceResponse.HotPlaceInfo;
@@ -189,6 +191,26 @@ public class HotplaceServiceImpl implements HotplaceService {
 		}
 		
 		return response.success(resultList, "추천 탑5 조회 성공", HttpStatus.OK);
+	}
+
+	@Transactional
+	@Override
+	public ResponseEntity<?> addNewReply(String hotplaceId, Reply reply, String userEmail) {
+		User user = userMapper.selectByEmail(userEmail);
+		
+		if(user == null) {
+			return response.fail("유저가 없습니다.", HttpStatus.BAD_REQUEST);
+		}
+		
+		HotPlaceReplyEntity replyEntity = HotPlaceReplyEntity.builder()
+				.content(reply.content())
+				.userId(user.getId())
+				.hotplaceId(Integer.parseInt(hotplaceId))
+				.build();
+		
+		hotplaceMapper.inesrtReply(replyEntity);
+		
+		return response.success("댓글 작성 성공");
 	}
 
 }
