@@ -8,6 +8,9 @@ public record UserResponse(){
 	@Schema(description = "유저 정보")
 	@Builder
 	public static record UserInfo(
+			@Schema(description = "유저 id")
+			int id,
+			
 			@Schema(description = "유저 이름")
 			String name,
 			
@@ -34,6 +37,7 @@ public record UserResponse(){
 	) {
 		public static UserInfo from(com.user.entity.UserInfo userInfo) {
 			return UserResponse.UserInfo.builder()
+					.id(userInfo.getId())
 					.name(userInfo.getName())
 					.email(userInfo.getEmail())
 					.phone(userInfo.getPhone())
