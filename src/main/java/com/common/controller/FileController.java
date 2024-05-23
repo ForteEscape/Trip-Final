@@ -33,7 +33,7 @@ public class FileController {
 	private final S3ImageService imageService;
 	
 	@PostMapping(path = "/upload/notice", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<String>> uploadFiles(@RequestPart("images") List<MultipartFile> images) {
+	public ResponseEntity<List<String>> uploadNoticeFiles(@RequestPart("images") List<MultipartFile> images) {
 		List<String> imageList = new ArrayList<>();
 		
 		for(MultipartFile image : images) {
@@ -42,6 +42,18 @@ public class FileController {
 		
 		return ResponseEntity.ok(imageList);
 	}
+	
+	@PostMapping(path = "/upload/hotplace", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<String>> uploadHotPlaceFiles(@RequestPart("images") List<MultipartFile> images) {
+		List<String> imageList = new ArrayList<>();
+		
+		for(MultipartFile image : images) {
+			imageList.add(imageService.upload(image, Directory.HOTPLACE));
+		}
+		
+		return ResponseEntity.ok(imageList);
+	}
+	
 	
 	@GetMapping(path = "/render/notice", produces = {
 			MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_GIF_VALUE
