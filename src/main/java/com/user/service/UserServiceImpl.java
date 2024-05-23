@@ -86,6 +86,7 @@ public class UserServiceImpl implements UserService {
 		return response.success("회원가입에 성공했습니다.");
 	}
 
+	@Transactional
 	@Override
 	public ResponseEntity<?> login(Login loginRequest) {
 		// TODO Auto-generated method stub
@@ -114,6 +115,7 @@ public class UserServiceImpl implements UserService {
 		return response.success(token, "로그인에 성공했습니다", HttpStatus.OK);
 	}
 
+	@Transactional
 	@Override
 	public ResponseEntity<?> reissue(Reissue reissueRequest) {
 		// TODO Auto-generated method stub
@@ -140,6 +142,7 @@ public class UserServiceImpl implements UserService {
 		return response.success(newToken, "Token 정보가 갱신되었습니다.", HttpStatus.OK);
 	}
 
+	@Transactional
 	@Override
 	public ResponseEntity<?> logout(Logout logoutRequest) {
 		// TODO Auto-generated method stub
@@ -217,6 +220,7 @@ public class UserServiceImpl implements UserService {
 		return response.success("패스워드 변경에 성공했습니다.");
 	}
 
+	@Transactional
 	@Override
 	public ResponseEntity<?> findUserPassword(Password passwordForm) {
 		User user = userMapper.selectByEmail(passwordForm.email());
@@ -231,6 +235,7 @@ public class UserServiceImpl implements UserService {
 		return response.success("패스워드가 초기화되었습니다. 초기 패스워드는 이메일과 동일합니다.");
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public ResponseEntity<?> findUserEmail(Email emailForm) {
 		Map<String, String> paramMap = new HashMap<>();
@@ -246,6 +251,7 @@ public class UserServiceImpl implements UserService {
 		return response.success(user.getEmail(), "사용자 이메일 찾기 성공", HttpStatus.OK);
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public ResponseEntity<?> validateEmail(EmailValidate email) {
 		User user = userMapper.selectByEmail(email.email());
@@ -255,6 +261,14 @@ public class UserServiceImpl implements UserService {
 		}
 		
 		return response.success("사용 가능한 이메일입니다.");
+	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public ResponseEntity<?> countAllUser() {
+		int count = userMapper.countAllUser();
+		
+		return response.success(count, "유저 수 조회 성공", HttpStatus.OK);
 	}
 
 }

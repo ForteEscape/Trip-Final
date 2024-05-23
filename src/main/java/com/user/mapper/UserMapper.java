@@ -26,4 +26,6 @@ public interface UserMapper {
 
 	List<String> selectAllUserCode();
 
+	int countAllUser();
+
 }

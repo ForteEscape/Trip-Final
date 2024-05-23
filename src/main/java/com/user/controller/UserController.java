@@ -98,4 +98,15 @@ public class UserController {
 	public ResponseEntity<?> findUserEmail(@RequestBody UserRequest.Email emailForm) {
 		return userService.findUserEmail(emailForm);
 	}
+	
+	@Operation(summary = "유저 수 조회", description = "유저 수 조회 api")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "유저 수 검색 성공"),
+			@ApiResponse(responseCode = "400", description = "입력 값에 오류가 있습니다."),
+			@ApiResponse(responseCode = "500", description = "서버 에러가 발생했습니다.")
+	})
+	@GetMapping("/count")
+	public ResponseEntity<?> getUserTotalCount() {
+		return userService.countAllUser();
+	}
 }

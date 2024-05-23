@@ -7,4 +7,5 @@ public interface AttractionService {
 	ResponseEntity<?> getAreaInfo();
 
 	ResponseEntity<?> getAttractionInfo();
+	
 }

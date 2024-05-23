@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -38,9 +39,14 @@ public class AttractionController {
 	public ResponseEntity<?> updateSido() {
 		return attractionService.getAreaInfo();
 	}
+	
+	@GetMapping
+	public ResponseEntity<?> getAttractionCount() {
+		return attractionQueryService.getAttractionCount();
+	}
 
 	// attraction info 데이터 업데이트
-	@GetMapping
+	@PutMapping
 	public ResponseEntity<?> updateAttractionInfo() {
 		return attractionService.getAttractionInfo();
 	}

@@ -9,4 +9,6 @@ public interface AttractionQueryService {
 	ResponseEntity<?> selectGugunBySidoId(String sidoId);
 	
 	ResponseEntity<?> selectByContentId(String contentId);
+	
+	ResponseEntity<?> getAttractionCount();
 }

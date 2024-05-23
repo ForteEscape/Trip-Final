@@ -36,5 +36,7 @@
 		select * from gugun where sido_code = #{sidoCode}
 	</select>
 	
-	
+	<select id="getAttractionCount" resultType="int">
+		select count(*) from attraction_info;
+	</select>
 </mapper>

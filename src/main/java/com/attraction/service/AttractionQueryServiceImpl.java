@@ -25,6 +25,7 @@ public class AttractionQueryServiceImpl implements AttractionQueryService {
 	
 	private final AttractionQueryMapper attractionMapper;
 	private final Response response;
+	private int attractionCount = -1;
 
 	@Override
 	public ResponseEntity<?> selectAllCity() {
@@ -56,6 +57,15 @@ public class AttractionQueryServiceImpl implements AttractionQueryService {
 		SimpleAttractionInfo result = SimpleAttractionInfo.from(info);
 		
 		return response.success(result, "관광지 데이터 조회 성공", HttpStatus.OK);
+	}
+
+	@Override
+	public ResponseEntity<?> getAttractionCount() {
+		if(attractionCount == -1) {
+			attractionCount = attractionMapper.getAttractionCount();
+		}
+		
+		return response.success(attractionCount, "관광지 갯수 조회 성공", HttpStatus.OK);
 	}
 	
 	

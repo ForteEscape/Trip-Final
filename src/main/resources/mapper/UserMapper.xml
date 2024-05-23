@@ -57,4 +57,8 @@
 	<select id="selectAllUserCode" resultType="String">
 		select user_code from user;
 	</select>
+	
+	<select id="countAllUser" resultType="int">
+		select count(*) from user;
+	</select>
 </mapper>
