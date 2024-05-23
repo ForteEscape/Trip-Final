@@ -18,4 +18,6 @@ public interface AttractionQueryMapper {
 	List<Gugun> selectBySidoCode(String sidoCode);
 	
 	List<AttractionInfo> selectAllAttractionInfo();
+
+	AttractionInfo selectByContentId(String contentId);
 }

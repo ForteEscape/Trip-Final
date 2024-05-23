@@ -43,7 +43,7 @@ public class UserController {
 			}),
 			@ApiResponse(responseCode = "500", description = "서버 에러가 발생했습니다.")
 	})
-	@PreAuthorize("hasRole('ROLE_USER')")
+	@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
 	@GetMapping
 	public ResponseEntity<?> getUserInfo(Principal principal) {
 		return userService.getUserInfo(principal.getName());
@@ -55,7 +55,7 @@ public class UserController {
 			@ApiResponse(responseCode = "400", description = "입력 값에 오류가 있습니다."),
 			@ApiResponse(responseCode = "500", description = "서버 에러가 발생했습니다.")
 	})
-	@PreAuthorize("hasRole('ROLE_USER')")
+	@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
 	@PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> updateUserInfo(@RequestPart("profile") MultipartFile image,
 			@RequestPart("userInfo") UserRequest.Update userInfo,  Principal principal) {
@@ -69,7 +69,7 @@ public class UserController {
 			@ApiResponse(responseCode = "400", description = "입력 값에 오류가 있습니다."),
 			@ApiResponse(responseCode = "500", description = "서버 에러가 발생했습니다.")
 	})
-	@PreAuthorize("hasRole('ROLE_USER')")
+	@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
 	@PutMapping("/password")
 	public ResponseEntity<?> updateUserPassword(@RequestBody UserRequest.PasswordUpdate passwordData, Principal principal) {
 		return userService.updateUserPassword(passwordData, principal.getName());

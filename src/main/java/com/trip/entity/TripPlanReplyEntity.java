@@ -17,5 +17,6 @@ public class TripPlanReplyEntity {
 	private int planId;
 	private String content;
 	private String writeDate;
+	private String userImage;
 	
 }

@@ -1,5 +1,7 @@
 package com.attraction.vo;
 
+import com.attraction.entity.AttractionInfo;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public record AttractionResponse() {
@@ -34,4 +36,14 @@ public record AttractionResponse() {
 		}
 	}
 
+	@Schema(description = "간단한 관광지 이름/위치 데이터")
+	public static record SimpleAttractionInfo(
+			String title,
+			double latitude,
+			double longitude) {
+		
+		public static SimpleAttractionInfo from(AttractionInfo info) {
+			return new SimpleAttractionInfo(info.getTitle(), info.getLatitude(), info.getLongitude());
+		}
+	}
 }

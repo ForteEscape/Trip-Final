@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.attraction.vo.AttractionResponse.Sido;
 import com.hotplace.service.HotplaceService;
 import com.hotplace.vo.HotplaceRequest;
+import com.hotplace.vo.HotplaceRequest.HotPlace;
 import com.hotplace.vo.HotplaceResponse.HotPlaceDetail;
 import com.hotplace.vo.HotplaceResponse.HotPlaceInfo;
 import com.hotplace.vo.HotplaceResponse.HotPlacePageInfo;
@@ -50,7 +51,8 @@ public class HotPlaceController {
 			@ApiResponse(responseCode = "400", description = "입력 값에 오류가 있습니다."),
 			@ApiResponse(responseCode = "500", description = "서버 에러가 발생했습니다.")
 	})
-	@PreAuthorize("hasRole('ROLE_USER')")
+	@Parameter(name = "hotplace", content = @Content(schema = @Schema(implementation = HotPlace.class)))
+	@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
 	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> addNewHotPlace(@RequestPart("images") List<MultipartFile> images,
 			@RequestPart("data") @Valid HotplaceRequest.HotPlace hotplace, Principal principal) {
@@ -95,7 +97,7 @@ public class HotPlaceController {
 			@ApiResponse(responseCode = "200", description = "핫 플레이스 추천 성공"),
 			@ApiResponse(responseCode = "500", description = "서버 에러가 발생했습니다.")
 	})
-	@PreAuthorize("hasRole('ROLE_USER')")
+	@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
 	@GetMapping("/{hotplaceId}/recommend")
 	public ResponseEntity<?> recommendHotPlace(@PathVariable("hotplaceId") String hotPlaceId,
 			Principal principal) {
