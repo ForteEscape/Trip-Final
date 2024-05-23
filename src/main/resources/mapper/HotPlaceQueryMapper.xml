@@ -14,6 +14,7 @@
 		<result column="represent_img" property="representImage"/>
 		<result column="place_desc" property="placeDesc"/>
 		<result column="uid" property="uid"/>
+		<result column="content_id" property="contentId" />
 	</resultMap>
 	
 	<resultMap id="hotPlaceRecommend" type="HotPlaceRecommendEntity">
