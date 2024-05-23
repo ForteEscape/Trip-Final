@@ -3,10 +3,10 @@ package com.hotplace.controller;
 import java.security.Principal;
 import java.util.List;
 
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -132,5 +132,38 @@ public class HotPlaceController {
 			@RequestBody @Valid Reply reply, Principal principal) {
 
 		return hotPlaceService.addNewReply(hotplaceId, reply, principal.getName());
+	}
+	
+	@Operation(summary = "핫 플레이스 댓글 조회", description = "핫 플레이스 댓글 조회 api")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "핫 플레이스 댓글 추가 성공", content = {
+					@Content(array = @ArraySchema(schema = @Schema(implementation = Reply.class)))
+			}),
+			@ApiResponse(responseCode = "400", description = "입력 값에 오류가 있습니다."),
+			@ApiResponse(responseCode = "500", description = "서버 에러가 발생했습니다.")
+	})
+	@Parameter(name = "hotplaceId", description = "핫 플레이스 번호")
+	@GetMapping("/{hotplaceId}/replies")
+	public ResponseEntity<?> getAllReply(@PathVariable("hotplaceId") String hotplaceId) {
+		return hotPlaceService.getAllReply(hotplaceId);
+	}
+	
+	@Operation(summary = "핫 플레이스 댓글 삭제", description = "핫 플레이스 댓글 삭제 api")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "핫 플레이스 댓글 삭제 성공", content = {
+					@Content(array = @ArraySchema(schema = @Schema(implementation = Reply.class)))
+			}),
+			@ApiResponse(responseCode = "400", description = "입력 값에 오류가 있습니다."),
+			@ApiResponse(responseCode = "500", description = "서버 에러가 발생했습니다.")
+	})
+	@Parameters(value = {
+			@Parameter(name = "replyId", description = "댓글 번호"),
+			@Parameter(name = "hotplaceId", description = "핫 플레이스 번호")
+	})
+	@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+	@DeleteMapping("/{hotplaceId}/replies/{replyId}")
+	public ResponseEntity<?> deleteReply(@PathVariable("hotplaceId") String hotplaceId, 
+			@PathVariable("replyId") String replyId, Principal principal) {
+		return hotPlaceService.deleteReply(replyId, principal.getName());
 	}
 }

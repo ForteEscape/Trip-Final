@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.common.dto.Response;
 import com.common.exception.CustomException;
+import com.common.exception.ErrorCode;
 import com.common.service.S3ImageService;
 import com.common.util.Directory;
 import com.hotplace.entity.HotPlaceEntity;
@@ -26,10 +27,10 @@ import com.hotplace.mapper.HotplaceMapper;
 import com.hotplace.util.WeightCalculator;
 import com.hotplace.vo.HotplaceRequest.HotPlace;
 import com.hotplace.vo.HotplaceRequest.Reply;
-import com.hotplace.vo.HotplaceResponse;
 import com.hotplace.vo.HotplaceResponse.HotPlaceDetail;
 import com.hotplace.vo.HotplaceResponse.HotPlaceInfo;
 import com.hotplace.vo.HotplaceResponse.HotPlacePageInfo;
+import com.hotplace.vo.HotplaceResponse.HotPlaceReply;
 import com.user.entity.User;
 import com.user.mapper.UserMapper;
 
@@ -208,9 +209,45 @@ public class HotplaceServiceImpl implements HotplaceService {
 				.hotplaceId(Integer.parseInt(hotplaceId))
 				.build();
 		
-		hotplaceMapper.inesrtReply(replyEntity);
+		hotplaceMapper.insertReply(replyEntity);
 		
 		return response.success("댓글 작성 성공");
+	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public ResponseEntity<?> getAllReply(String hotplaceId) {
+		List<HotPlaceReply> resultList = hotplaceMapper.selectAllReply(hotplaceId).stream()
+				.map(HotPlaceReply::from)
+				.toList();
+		
+		return response.success(resultList, "댓글 조회 성공", HttpStatus.OK);
+	}
+
+	@Transactional
+	@Override
+	public ResponseEntity<?> deleteReply(String replyId, String userEmail) {
+		try {
+			User user = userMapper.selectByEmail(userEmail);
+			HotPlaceReplyEntity entity = hotplaceMapper.selectOne(replyId);
+			
+			log.info(entity.toString());
+			
+			if(user == null) {
+				throw new CustomException(ErrorCode.USER_NOT_FOUND);
+			}
+			
+			if(user.getId() != entity.getUserId()) {
+				log.info("wrong access " + user.getId() + " " + entity.getUserId());
+				throw new CustomException(ErrorCode.ILLEGAL_USER_ACCESS);
+			}
+			
+			hotplaceMapper.deleteReply(replyId);
+		} catch (Exception e) {
+			return response.fail(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+		
+		return response.success("댓글 삭제 성공");
 	}
 
 }
