@@ -80,6 +80,9 @@ public record HotplaceResponse() {
 			@Schema(description = "핫 플레이스 작성자 유저 id")
 			int uid,
 			
+			@Schema(description = "핫 플레이스 관광지 id")
+			int contentId,
+			
 			@Schema(description = "핫 플레이스 이름")
 			String title,
 			
@@ -108,6 +111,7 @@ public record HotplaceResponse() {
 			return HotPlaceDetail.builder()
 					.id(entity.getId())
 					.uid(entity.getUid())
+					.contentId(entity.getContentId())
 					.title(entity.getTitle())
 					.visitDate(entity.getVisitDate())
 					.author(entity.getAuthor())

@@ -39,4 +39,8 @@
 	<select id="getAttractionCount" resultType="int">
 		select count(*) from attraction_info;
 	</select>
+	
+	<select id="selectByContentId" parameterType="String" resultMap="attractionInfo">
+		select * from attraction_info where content_id = #{contentId}
+	</select>
 </mapper>
