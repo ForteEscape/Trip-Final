@@ -43,7 +43,7 @@
 			select id
 			from selected_trip_info
 			where user_id = #{userId}
-		);
+		)
 	</select>
 	
 	<select id="getSelectedTripByPlanId" parameterType="map" resultType="int">
@@ -78,7 +78,7 @@
 		from trip_plan tp
 		inner join user u
 		on tp.user_id = u.id
-		where tp.id = #{planId};
+		where tp.id = #{planId}
 
 	</select>
 	
@@ -92,7 +92,7 @@
 		from trip_plan_participate tpp
 		inner join user u
 		on tpp.user_code = u.user_code
-		where tpp.plan_id = #{planId};
+		where tpp.plan_id = #{planId}
 	</select>
 	
 	<select id="selectByPlanIdAndDay" parameterType="map" resultMap="attractionInfo">
@@ -109,7 +109,7 @@
 		select tpp.id, tpp.user_id, tpp.plan_id, tpp.write_date, tpp.content, u.name as author, u.profile_image as user_image
 		from trip_plan_reply tpp
 		inner join user u
-		on tpp.user_id = u.id;
+		on tpp.user_id = u.id
 		where tpp.plan_id = #{planId}
 	</select>
 	
@@ -117,7 +117,7 @@
 		select tpp.id, tpp.user_id, tpp.plan_id, tpp.write_date, tpp.content, u.name as author, u.profile_image as user_image
 		from trip_plan_reply tpp
 		inner join user u
-		on tpp.user_id = u.id;
+		on tpp.user_id = u.id
 		where tpp.id = #{replyId}
 	</select>
 </mapper>

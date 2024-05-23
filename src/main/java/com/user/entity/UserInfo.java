@@ -15,6 +15,7 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class UserInfo {
 	
+	private int id;
 	private String sidoName;
 	private String gugunName;
 	private String name;
