@@ -23,5 +23,9 @@ public interface HotplaceService {
 	ResponseEntity<?> getRecommendTop();
 
 	ResponseEntity<?> addNewReply(String hotplaceId, Reply reply, String userEmail);
+
+	ResponseEntity<?> getAllReply(String hotplaceId);
+
+	ResponseEntity<?> deleteReply(String replyId, String userEmail);
 	
 }

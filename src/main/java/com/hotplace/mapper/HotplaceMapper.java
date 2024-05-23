@@ -34,6 +34,12 @@ public interface HotplaceMapper {
 	
 	List<String> selectHotplaceImageByHotPlaceId(String hotPlaceId);
 
-	void inesrtReply(HotPlaceReplyEntity replyEntity);
+	void insertReply(HotPlaceReplyEntity replyEntity);
 
+	List<HotPlaceReplyEntity> selectAllReply(String hotplaceId);
+
+	void deleteReply(String replyId);
+
+	HotPlaceReplyEntity selectOne(String replyId);
+	
 }
