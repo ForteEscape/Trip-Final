@@ -177,7 +177,17 @@ public class HotplaceServiceImpl implements HotplaceService {
 		
 		for(HotPlaceInfoEntity entity : result) {
 			List<HotPlaceRecommendEntity> recommendList = hotplaceQueryMapper.selectRecommendByHid(entity.getId());
-			double weight = weightCalculator.getWeight(recommendList
+			
+			double weight = 0.0;
+			
+			if(recommendList.size() == 0) {
+				weight = 0.0;
+				entity.setRecommendWeight(weight);
+				topRecommend.offer(entity);
+				continue;
+			}
+			
+			weight = weightCalculator.getWeight(recommendList
 					.stream()
 					.filter(e -> e.getValid() == 1)
 					.collect(Collectors.toList()));
