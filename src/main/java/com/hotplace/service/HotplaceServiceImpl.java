@@ -23,7 +23,8 @@ import com.hotplace.entity.HotPlaceEntity;
 import com.hotplace.entity.HotPlaceInfoEntity;
 import com.hotplace.entity.HotPlaceRecommendEntity;
 import com.hotplace.entity.HotPlaceReplyEntity;
-import com.hotplace.mapper.HotplaceMapper;
+import com.hotplace.mapper.HotPlaceCommandMapper;
+import com.hotplace.mapper.HotPlaceQueryMapper;
 import com.hotplace.util.WeightCalculator;
 import com.hotplace.vo.HotplaceRequest.HotPlace;
 import com.hotplace.vo.HotplaceRequest.Reply;
@@ -42,7 +43,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class HotplaceServiceImpl implements HotplaceService {
 
-	private final HotplaceMapper hotplaceMapper;
+	private final HotPlaceCommandMapper hotplaceCommandMapper;
+	private final HotPlaceQueryMapper hotplaceQueryMapper;
 	private final UserMapper userMapper;
 	private final S3ImageService imageService;
 	private final WeightCalculator weightCalculator;
@@ -64,7 +66,7 @@ public class HotplaceServiceImpl implements HotplaceService {
 			paramMap.put("userId", authUser.getId());
 			paramMap.put("entity", entity);
 			
-			hotplaceMapper.insertHotPlace(paramMap);
+			hotplaceCommandMapper.insertHotPlace(paramMap);
 			
 			int hotPlaceId = entity.getId();
 
@@ -83,7 +85,7 @@ public class HotplaceServiceImpl implements HotplaceService {
 				paramMap.put("hid", hotPlaceId);
 				paramMap.put("images", imageAddress);
 				
-				hotplaceMapper.insertHotPlaceImages(paramMap);
+				hotplaceCommandMapper.insertHotPlaceImages(paramMap);
 			}
 		} catch (CustomException e) {
 			return response.fail(e.getMessage(), e.getStatus());
@@ -97,12 +99,12 @@ public class HotplaceServiceImpl implements HotplaceService {
 	@Transactional(readOnly = true)
 	@Override
 	public ResponseEntity<?> getHotPlaceInfo(int offset) {
-		List<HotPlaceInfo> result = hotplaceMapper.selectAllHotPlace(offset)
+		List<HotPlaceInfo> result = hotplaceQueryMapper.selectAllHotPlace(offset)
 				.stream()
 				.map(HotPlaceInfo::from)
 				.collect(Collectors.toList());
 		
-		int totalCount = hotplaceMapper.countAllHotPlace();
+		int totalCount = hotplaceQueryMapper.countAllHotPlace();
 		int currentOffset = offset;
 		
 		HotPlacePageInfo page = new HotPlacePageInfo(currentOffset, result, totalCount);
@@ -117,8 +119,8 @@ public class HotplaceServiceImpl implements HotplaceService {
 		List<String> imageList = null;
 		
 		try {
-			entity = hotplaceMapper.selectHotplaceInfoByHotPlaceId(hotPlaceId);
-			imageList = hotplaceMapper.selectHotplaceImageByHotPlaceId(hotPlaceId);
+			entity = hotplaceQueryMapper.selectHotplaceInfoByHotPlaceId(hotPlaceId);
+			imageList = hotplaceQueryMapper.selectHotplaceImageByHotPlaceId(hotPlaceId);
 		} catch (Exception e) {
 			response.fail(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -140,7 +142,7 @@ public class HotplaceServiceImpl implements HotplaceService {
 			paramMap.put("hid", hotPlaceId);
 			paramMap.put("uid", user.getId());
 			
-			entity = hotplaceMapper.getRecommendRecord(paramMap);
+			entity = hotplaceQueryMapper.getRecommendRecord(paramMap);
 			System.out.println(entity);
 			
 			if(entity == null) {
@@ -150,13 +152,13 @@ public class HotplaceServiceImpl implements HotplaceService {
 						.hid(Integer.parseInt(hotPlaceId))
 						.build();
 				
-				hotplaceMapper.insertRecommendRecord(newEntity);
+				hotplaceCommandMapper.insertRecommendRecord(newEntity);
 				valid = 1;
 			} else {
 				valid = entity.getValid();
 				paramMap.put("valid", valid ^ 1);
 				
-				hotplaceMapper.updateRecommendRecord(paramMap);
+				hotplaceCommandMapper.updateRecommendRecord(paramMap);
 				valid ^= 1;
 			}
 			
@@ -170,11 +172,11 @@ public class HotplaceServiceImpl implements HotplaceService {
 	@Transactional(readOnly = true)
 	@Override
 	public ResponseEntity<?> getRecommendTop() {
-		List<HotPlaceInfoEntity> result = hotplaceMapper.selectAllHotPlaceInfo();
+		List<HotPlaceInfoEntity> result = hotplaceQueryMapper.selectAllHotPlaceInfo();
 		PriorityQueue<HotPlaceInfoEntity> topRecommend = new PriorityQueue<>();
 		
 		for(HotPlaceInfoEntity entity : result) {
-			List<HotPlaceRecommendEntity> recommendList = hotplaceMapper.selectRecommendByHid(entity.getId());
+			List<HotPlaceRecommendEntity> recommendList = hotplaceQueryMapper.selectRecommendByHid(entity.getId());
 			double weight = weightCalculator.getWeight(recommendList
 					.stream()
 					.filter(e -> e.getValid() == 1)
@@ -209,7 +211,7 @@ public class HotplaceServiceImpl implements HotplaceService {
 				.hotplaceId(Integer.parseInt(hotplaceId))
 				.build();
 		
-		hotplaceMapper.insertReply(replyEntity);
+		hotplaceCommandMapper.insertReply(replyEntity);
 		
 		return response.success("댓글 작성 성공");
 	}
@@ -217,7 +219,7 @@ public class HotplaceServiceImpl implements HotplaceService {
 	@Transactional(readOnly = true)
 	@Override
 	public ResponseEntity<?> getAllReply(String hotplaceId) {
-		List<HotPlaceReply> resultList = hotplaceMapper.selectAllReply(hotplaceId).stream()
+		List<HotPlaceReply> resultList = hotplaceQueryMapper.selectAllReply(hotplaceId).stream()
 				.map(HotPlaceReply::from)
 				.toList();
 		
@@ -229,7 +231,7 @@ public class HotplaceServiceImpl implements HotplaceService {
 	public ResponseEntity<?> deleteReply(String replyId, String userEmail) {
 		try {
 			User user = userMapper.selectByEmail(userEmail);
-			HotPlaceReplyEntity entity = hotplaceMapper.selectOne(replyId);
+			HotPlaceReplyEntity entity = hotplaceQueryMapper.selectOne(replyId);
 			
 			log.info(entity.toString());
 			
@@ -242,7 +244,7 @@ public class HotplaceServiceImpl implements HotplaceService {
 				throw new CustomException(ErrorCode.ILLEGAL_USER_ACCESS);
 			}
 			
-			hotplaceMapper.deleteReply(replyId);
+			hotplaceCommandMapper.deleteReply(replyId);
 		} catch (Exception e) {
 			return response.fail(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}

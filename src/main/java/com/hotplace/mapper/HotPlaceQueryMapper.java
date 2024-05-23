@@ -10,18 +10,10 @@ import com.hotplace.entity.HotPlaceRecommendEntity;
 import com.hotplace.entity.HotPlaceReplyEntity;
 
 @Mapper
-public interface HotplaceMapper {
-
-	void insertHotPlaceImages(Map<String, Object> paramMap);
-	
-	void insertRecommendRecord(HotPlaceRecommendEntity entity);
-
-	void updateRecommendRecord(Map<String, Object> paramMap);
+public interface HotPlaceQueryMapper {
 
 	int countAllHotPlace();
 	
-	int insertHotPlace(Map<String, Object> paramMap);
-
 	HotPlaceInfoEntity selectHotplaceInfoByHotPlaceId(String hotPlaceId);
 
 	HotPlaceRecommendEntity getRecommendRecord(Map<String, Object> paramMap);
@@ -33,13 +25,8 @@ public interface HotplaceMapper {
 	List<HotPlaceInfoEntity> selectAllHotPlace(int offset);
 	
 	List<String> selectHotplaceImageByHotPlaceId(String hotPlaceId);
-
-	void insertReply(HotPlaceReplyEntity replyEntity);
-
-	List<HotPlaceReplyEntity> selectAllReply(String hotplaceId);
-
-	void deleteReply(String replyId);
-
-	HotPlaceReplyEntity selectOne(String replyId);
 	
+	List<HotPlaceReplyEntity> selectAllReply(String hotplaceId);
+	
+	HotPlaceReplyEntity selectOne(String replyId);
 }
