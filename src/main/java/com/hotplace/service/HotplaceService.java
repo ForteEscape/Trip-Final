@@ -6,6 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.hotplace.vo.HotplaceRequest;
+import com.hotplace.vo.HotplaceRequest.Reply;
+
+import jakarta.validation.Valid;
 
 public interface HotplaceService {
 
@@ -18,5 +21,7 @@ public interface HotplaceService {
 	ResponseEntity<?> recommendHotPlace(String hotPlaceId, String userEmail);
 
 	ResponseEntity<?> getRecommendTop();
+
+	ResponseEntity<?> addNewReply(String hotplaceId, Reply reply, String userEmail);
 	
 }

@@ -10,22 +10,24 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.attraction.vo.AttractionResponse.Sido;
 import com.hotplace.service.HotplaceService;
 import com.hotplace.vo.HotplaceRequest;
 import com.hotplace.vo.HotplaceRequest.HotPlace;
+import com.hotplace.vo.HotplaceRequest.Reply;
 import com.hotplace.vo.HotplaceResponse.HotPlaceDetail;
 import com.hotplace.vo.HotplaceResponse.HotPlaceInfo;
 import com.hotplace.vo.HotplaceResponse.HotPlacePageInfo;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -53,8 +55,8 @@ public class HotPlaceController {
 	})
 	@Parameter(name = "hotplace", content = @Content(schema = @Schema(implementation = HotPlace.class)))
 	@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
-	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> addNewHotPlace(@RequestPart("images") List<MultipartFile> images,
+	@PostMapping
+	public ResponseEntity<?> addNewHotPlace(@RequestPart(value = "images", required = false) List<MultipartFile> images,
 			@RequestPart("data") @Valid HotplaceRequest.HotPlace hotplace, Principal principal) {
 
 		return hotPlaceService.addNewHotPlace(images, hotplace, principal.getName());
@@ -67,11 +69,9 @@ public class HotPlaceController {
 			}),
 			@ApiResponse(responseCode = "500", description = "서버 에러가 발생했습니다.")
 	})
+	@Parameter(name = "page", description = "조회할 페이지", example = "1", required = true)
 	@GetMapping
-	public ResponseEntity<?> getHotPlaces(
-			@RequestParam(name="page", required = true) 
-			@Parameter(name = "page", description = "조회할 페이지", example = "1", required = true)
-			int page) {
+	public ResponseEntity<?> getHotPlaces(@RequestParam(name="page", required = true) int page) {
 		int offset = (page - 1) * DATA_PER_PAGE;
 		
 		return hotPlaceService.getHotPlaceInfo(offset);
@@ -84,11 +84,10 @@ public class HotPlaceController {
 			}),
 			@ApiResponse(responseCode = "500", description = "서버 에러가 발생했습니다.")
 	})
+	@Parameter(name = "hotPlaceId", description = "핫플레이스 Id", example = "3", required = true)
 	@GetMapping("/{hotplaceId}")
 	public ResponseEntity<?> getHotPlaceDetail(
-			@PathVariable("hotplaceId") 
-			@Parameter(name = "hotPlaceId", description = "핫플레이스 Id", example = "3", required = true)
-			String hotPlaceId) {
+			@PathVariable("hotplaceId") String hotPlaceId) {
 		return hotPlaceService.getHotPlaceDeatil(hotPlaceId);
 	}
 
@@ -115,5 +114,23 @@ public class HotPlaceController {
 	@GetMapping("/top-recommends")
 	public ResponseEntity<?> getRecommendTopFive() {
 		return hotPlaceService.getRecommendTop();
+	}
+	
+	@Operation(summary = "핫 플레이스 댓글 추가", description = "핫 플레이스 댓글 추가 api")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "핫 플레이스 댓글 추가 성공"),
+			@ApiResponse(responseCode = "400", description = "입력 값에 오류가 있습니다."),
+			@ApiResponse(responseCode = "500", description = "서버 에러가 발생했습니다.")
+	})
+	@Parameters(value = {
+			@Parameter(name = "reply", content = @Content(schema = @Schema(implementation = Reply.class))),
+			@Parameter(name = "hotplaceId", description = "핫 플레이스 번호")
+	})
+	@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+	@PostMapping("/{hotplaceId}/replies")
+	public ResponseEntity<?> addNewReply(@PathVariable("hotplaceId") String hotplaceId, 
+			@RequestBody @Valid Reply reply, Principal principal) {
+
+		return hotPlaceService.addNewReply(hotplaceId, reply, principal.getName());
 	}
 }
